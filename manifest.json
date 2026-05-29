@@ -1,0 +1,19 @@
+{
+  "name": "Distribuição Eletrônica",
+  "short_name": "Dist. Eletrônica",
+  "description": "Pratique distribuição eletrônica de elementos químicos brincando",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#061d3d",
+  "theme_color": "#1a7bc6",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
