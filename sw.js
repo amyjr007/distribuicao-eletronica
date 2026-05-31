@@ -1,39 +1,36 @@
-const CACHE = 'dist-eletronica-v1';
+const CACHE = 'dist-eletronica-v13';
 
 const FILES = [
   './',
   './index.html',
   './manifest.json',
   './icon.svg',
+  './imagens/linus_pauling.png',
   './audio/applause.mp3',
   './audio/certo.wav',
   './audio/dialogo1.mp3',
   './audio/dialogo1.1.mp3',
+  './audio/dialogo1.2.mp3',
+  './audio/dialogo1.3.mp3',
   './audio/dialogo2.mp3',
   './audio/dialogo3.mp3',
   './audio/dialogo4.mp3',
-  './audio/dialogo4.1.mp3',
   './audio/dialogo5.mp3',
-  './audio/dialogo5.1.mp3',
-  './audio/dialogo5.2.mp3',
   './audio/dialogo6.mp3',
-  './audio/dialogo6.1.mp3',
   './audio/dialogo7.mp3',
   './audio/dialogo8.mp3',
   './audio/dialogo8.1.mp3',
   './audio/dialogo8.2.mp3',
+  './audio/dialogo8.3.mp3',
+  './audio/dialogo8.4.mp3',
   './audio/dialogo9.mp3',
-  './audio/dialogo9.1.mp3',
-  './audio/dialogo9.2.mp3',
-  './audio/dialogo9.3.mp3',
   './audio/dialogo10.mp3',
   './audio/dialogo10.1.mp3',
-  './audio/dialogo10.2.mp3',
-  './audio/dialogo10.3.mp3',
-  './audio/dialogo10.4.mp3',
   './audio/dialogo10.5.mp3',
   './audio/dialogo11.mp3',
   './audio/dialogo11.1.mp3',
+  './audio/dialogo11.2.mp3',
+  './audio/dialogo11.3.mp3',
   './audio/dialogo12.mp3',
   './audio/dialogo12.1.mp3',
   './audio/encaixe.mp3',
@@ -61,8 +58,16 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+// network-first: sempre tenta a versão mais nova; cai no cache só se offline
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    fetch(e.request)
+      .then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });

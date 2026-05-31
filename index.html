@@ -114,7 +114,7 @@ body{
   cursor:grab;touch-action:none;user-select:none;
   transition:opacity .15s,transform .1s;position:relative;z-index:1;
 }
-.chip .sup{font-size:14px;margin-left:2px;transform:translateY(-8px);display:inline-block;font-weight:700;color:#e03030;}
+.chip .sup{font-size:15.5px;margin-left:2px;transform:translateY(-8px);display:inline-block;font-weight:700;color:#e03030;}
 .slot .chip .sup{font-size:16px;}
 .chip.drag-source{opacity:.3;cursor:grabbing;}
 .chip.in-slot{box-shadow:0 2px 5px rgba(31,124,214,.18);}
@@ -485,6 +485,101 @@ body{
   content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);
   border:10px solid transparent;border-top-color:white;border-bottom:none;
 }
+#tut-overlay-img{
+  position:fixed;inset:0;z-index:3550;
+  display:none;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+#tut-overlay-content{
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+#tut-overlay-title{
+  color:#ffe033;font-size:22px;font-weight:800;text-align:center;
+  text-shadow:0 2px 10px rgba(0,0,0,.7);letter-spacing:.5px;
+  opacity:0;transition:opacity .8s ease;
+}
+#tut-overlay-img img{
+  max-width:75vw;max-height:60vh;
+  opacity:0;transition:opacity .8s ease,transform .35s ease;
+  border-radius:14px;box-shadow:0 12px 48px rgba(0,0,0,.6);
+}
+#tut-overlay-img img.zoomed{transform:scale(2.4);transform-origin:50% 30%;}
+#tut-overlay-img.show #tut-overlay-title,
+#tut-overlay-img.show img{opacity:1;}
+@keyframes tutSubPulse2{
+  0%,100%{transform:scale(1);}
+  15%{transform:scale(1.65);}
+  30%{transform:scale(1);}
+  50%{transform:scale(1.65);}
+  65%{transform:scale(1);}
+}
+.tsubn-lbl.pulse2{animation:tutSubPulse2 .9s ease;}
+@keyframes chipSupPulse{
+  0%,100%{transform:translateY(-8px) scale(1);color:#e03030;}
+  10%{transform:translateY(-8px) scale(2);color:#fff;}
+  22%{transform:translateY(-8px) scale(1);}
+  35%{transform:translateY(-8px) scale(2);color:#fff;}
+  48%{transform:translateY(-8px) scale(1);}
+  61%{transform:translateY(-8px) scale(2);color:#fff;}
+  74%{transform:translateY(-8px) scale(1);}
+  87%{transform:translateY(-8px) scale(2);color:#fff;}
+}
+.chip-sup-pulsing{animation:chipSupPulse 3.2s ease-in-out infinite;}
+.lv-bracket-el{position:fixed;pointer-events:none;z-index:3700;opacity:0;transition:opacity .35s ease;}
+.lv-bracket-el.show{opacity:1;}
+.lv-bracket-bar{height:7px;border-left:2.5px solid;border-right:2.5px solid;border-bottom:2.5px solid;border-radius:0 0 5px 5px;}
+.lv-bracket-text{text-align:center;font-size:11px;font-weight:800;margin-top:3px;}
+.chip-evidence{
+  transition:transform .3s ease;
+}
+@keyframes cardPulse2{
+  0%,100%{transform:scale(1.10);}
+  20%,60%{transform:scale(1.28);}
+  40%,80%{transform:scale(1.10);}
+}
+.card-pulsing{animation:cardPulse2 0.9s ease;}
+#tut-atom{
+  position:fixed;inset:0;z-index:3552;
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  pointer-events:none;
+}
+#tut-atom-title{
+  color:#f97316;font-size:18px;font-weight:800;text-align:center;
+  letter-spacing:.3px;
+  background:white;border-radius:10px;padding:5px 14px;
+  box-shadow:0 2px 12px rgba(0,0,0,.18);
+  opacity:0;transition:opacity .7s ease;
+}
+#tut-atom-title.show{opacity:1;}
+#tut-atom-wrap{width:min(82vw,72vh);height:min(82vw,72vh);}
+#tut-atom-svg{width:100%;height:100%;overflow:visible;}
+#tut-atom-info{display:flex;flex-direction:column;align-items:center;gap:6px;}
+#tut-atom-sub-title{
+  color:#60a5fa;font-size:13px;font-weight:700;letter-spacing:.5px;
+  opacity:0;transition:opacity .5s ease;
+}
+#tut-atom-sub-title.show{opacity:1;}
+#tut-atom-sublevels{display:flex;gap:18px;align-items:flex-end;}
+.tut-subnivel{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  opacity:0;transition:opacity .5s ease;
+}
+.tut-subnivel.show{opacity:1;}
+.tsubn-lbl{color:#60a5fa;font-size:22px;font-weight:700;font-style:italic;line-height:1;}
+.tsubn-max{
+  color:#60a5fa;font-size:13px;font-weight:700;line-height:1;min-height:14px;
+  margin-left:12px;
+  opacity:0;transition:opacity .5s ease;
+}
+.tsubn-max.show{opacity:1;}
+.atom-orbit{opacity:0;transition:opacity .6s ease;}
+.atom-orbit.show{opacity:1;}
+.atom-nucleus{opacity:0;transition:opacity .55s ease;}
+.atom-nucleus.show{opacity:1;}
+.atom-electrons{opacity:0;transition:opacity .6s ease;}
+.atom-electrons.show{opacity:1;}
+.atom-label{opacity:0;transition:opacity .55s ease;}
+.atom-label.show{opacity:1;}
 .float-btn{
   position:fixed;bottom:20px;right:20px;
   background:rgba(255,255,255,.13);color:rgba(255,255,255,.85);
@@ -493,12 +588,25 @@ body{
   backdrop-filter:blur(4px);transition:background .12s;
 }
 .float-btn:hover{background:rgba(255,255,255,.22);}
-#tut-skip{z-index:3700;display:none;background:#fff;color:var(--sky-600);border-color:var(--sky-500);}
-#tut-skip:hover{background:#f0f9ff;}
-#tut-audio-next{left:auto;transform:none;right:20px;bottom:68px;z-index:3700;display:none;
-  background:rgba(47,151,245,.90);border-color:rgba(47,151,245,.5);}
-#btn-tutorial{z-index:200;background:#fff;color:var(--sky-600,#0284c7);border-color:var(--sky-500,#0ea5e9);}
-#btn-tutorial:hover{background:#f0f9ff;}
+#btn-tutorial{
+  position:fixed;bottom:20px;right:20px;z-index:200;
+  width:52px;height:52px;border-radius:50%;padding:0;border:none;
+  background:#21c87a;color:white;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;
+  box-shadow:0 4px 16px rgba(33,200,122,.45);
+  transition:background .2s,box-shadow .2s;
+}
+#btn-tutorial.playing{background:#9ca3af;box-shadow:0 4px 12px rgba(0,0,0,.22);}
+#btn-tutorial:hover:not(.playing){background:#18b36b;}
+#btn-tutorial.playing:hover{background:#6b7280;}
+#btn-tutorial.btn-hidden{display:none;}
+#btn-tutorial.wait-play{z-index:3700;animation:playPulse 1.5s ease-in-out infinite;}
+#btn-tutorial.audio-done{background:#21c87a;animation:playPulse 1.5s ease-in-out infinite;}
+@keyframes playPulse{
+  0%,100%{box-shadow:0 4px 16px rgba(33,200,122,.45);}
+  50%{box-shadow:0 4px 28px rgba(33,200,122,.9),0 0 0 10px rgba(33,200,122,.22);}
+}
 #tut-hand{
   position:fixed;z-index:3800;pointer-events:none;display:none;
   font-size:30px;line-height:1;
@@ -533,9 +641,15 @@ body{
 .ep-pointer{
   position:absolute;top:50%;left:0;right:0;height:34px;
   transform:translateY(-50%);pointer-events:none;
-  border-top:2.5px solid var(--sky-500);border-bottom:2.5px solid var(--sky-500);
-  background:rgba(47,151,245,.10);border-radius:7px;
+  border-top:2.5px solid #22c55e;border-bottom:2.5px solid #22c55e;
+  background:rgba(34,197,94,.15);border-radius:7px;
 }
+#ep-confirm-btn{
+  margin-top:10px;width:100%;padding:9px 0;border:none;border-radius:10px;
+  background:#21c87a;color:white;font-size:14px;font-weight:800;
+  cursor:pointer;font-family:inherit;transition:background .15s;
+}
+#ep-confirm-btn:hover{background:#18b36b;}
 .ep-hint{
   font-size:11px;font-weight:600;color:var(--bad);text-align:center;
   line-height:1.4;background:#fff0f0;border-radius:8px;padding:7px 9px;
@@ -581,6 +695,7 @@ body{
       <div class="ep-pointer"></div>
     </div>
     <div class="ep-hint" id="ep-hint"></div>
+    <button id="ep-confirm-btn">Confirmar</button>
   </div>
 </div>
 
@@ -637,9 +752,93 @@ body{
     <button class="tut-btn primary" id="tut-next">Próximo →</button>
   </div>
 </div>
-<button id="tut-audio-next" class="float-btn">Próximo</button>
-<button id="tut-skip" class="float-btn">Pular tutorial</button>
-<button id="btn-tutorial" class="float-btn">Tutorial</button>
+<button id="btn-tutorial">▶</button>
+<div id="tut-overlay-img">
+  <div id="tut-overlay-content">
+    <div id="tut-overlay-title"></div>
+    <img src="" alt="">
+  </div>
+</div>
+<div id="tut-atom">
+  <div id="tut-atom-title">Átomo de Rutherford-Bohr</div>
+  <div id="tut-atom-wrap">
+    <svg id="tut-atom-svg" viewBox="-140 -140 280 285" xmlns="http://www.w3.org/2000/svg">
+      <!-- orbits -->
+      <circle id="atom-orbit-0" class="atom-orbit" cx="0" cy="0" r="22" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+      <circle id="atom-orbit-1" class="atom-orbit" cx="0" cy="0" r="40" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+      <circle id="atom-orbit-2" class="atom-orbit" cx="0" cy="0" r="58" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+      <circle id="atom-orbit-3" class="atom-orbit" cx="0" cy="0" r="76" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+      <circle id="atom-orbit-4" class="atom-orbit" cx="0" cy="0" r="92" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+      <circle id="atom-orbit-5" class="atom-orbit" cx="0" cy="0" r="108" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+      <circle id="atom-orbit-6" class="atom-orbit" cx="0" cy="0" r="122" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+      <!-- nucleus: 17 protons -->
+      <g id="atom-nucleus" class="atom-nucleus">
+        <circle cx="0" cy="0" r="2.5" fill="#f97316"/>
+        <circle cx="4" cy="0" r="2.5" fill="#f97316"/>
+        <circle cx="2" cy="3.5" r="2.5" fill="#f97316"/>
+        <circle cx="-2" cy="3.5" r="2.5" fill="#f97316"/>
+        <circle cx="-4" cy="0" r="2.5" fill="#f97316"/>
+        <circle cx="-2" cy="-3.5" r="2.5" fill="#f97316"/>
+        <circle cx="2" cy="-3.5" r="2.5" fill="#f97316"/>
+        <circle cx="7.5" cy="0" r="2.5" fill="#f97316"/>
+        <circle cx="6.1" cy="4.4" r="2.5" fill="#f97316"/>
+        <circle cx="2.3" cy="7.1" r="2.5" fill="#f97316"/>
+        <circle cx="-2.3" cy="7.1" r="2.5" fill="#f97316"/>
+        <circle cx="-6.1" cy="4.4" r="2.5" fill="#f97316"/>
+        <circle cx="-7.5" cy="0" r="2.5" fill="#f97316"/>
+        <circle cx="-6.1" cy="-4.4" r="2.5" fill="#f97316"/>
+        <circle cx="-2.3" cy="-7.1" r="2.5" fill="#f97316"/>
+        <circle cx="2.3" cy="-7.1" r="2.5" fill="#f97316"/>
+        <circle cx="6.1" cy="-4.4" r="2.5" fill="#f97316"/>
+      </g>
+      <!-- 2 electrons on orbit 1 -->
+      <g id="atom-electrons-0" class="atom-electrons">
+        <g><animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="2.4s" repeatCount="indefinite"/>
+          <circle cx="22" cy="0" r="3" fill="#ef4444"/>
+          <circle cx="-22" cy="0" r="3" fill="#ef4444"/>
+        </g>
+      </g>
+      <!-- level labels -->
+      <text id="atom-label-0" class="atom-label" x="22"  y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">K</text>
+      <text id="atom-label-1" class="atom-label" x="40"  y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">L</text>
+      <text id="atom-label-2" class="atom-label" x="58"  y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">M</text>
+      <text id="atom-label-3" class="atom-label" x="76"  y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">N</text>
+      <text id="atom-label-4" class="atom-label" x="92"  y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">O</text>
+      <text id="atom-label-5" class="atom-label" x="108" y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">P</text>
+      <text id="atom-label-6" class="atom-label" x="122" y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">Q</text>
+      <!-- level number labels at top of each orbit -->
+      <text id="atom-lv-0" class="atom-label" x="0" y="-27"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">1o nível</text>
+      <text id="atom-lv-1" class="atom-label" x="0" y="-45"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">2o nível</text>
+      <text id="atom-lv-2" class="atom-label" x="0" y="-63"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">3o nível</text>
+      <text id="atom-lv-3" class="atom-label" x="0" y="-81"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">4o nível</text>
+      <text id="atom-lv-4" class="atom-label" x="0" y="-97"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">5o nível</text>
+      <text id="atom-lv-5" class="atom-label" x="0" y="-113" text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">6o nível</text>
+      <text id="atom-lv-6" class="atom-label" x="0" y="-127" text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">7o nível</text>
+      <text id="atom-niv-txt" class="atom-label" x="0" y="143" text-anchor="middle" fill="#ffffff" font-size="13.5" font-family="inherit">7 níveis</text>
+    </svg>
+  </div>
+  <div id="tut-atom-info">
+    <div id="tut-atom-sub-title">subníveis</div>
+    <div id="tut-atom-sublevels">
+      <div class="tut-subnivel" id="tsubn-s">
+        <span class="tsubn-max" id="tsubn-s-max">2</span>
+        <span class="tsubn-lbl">s</span>
+      </div>
+      <div class="tut-subnivel" id="tsubn-p">
+        <span class="tsubn-max" id="tsubn-p-max">6</span>
+        <span class="tsubn-lbl">p</span>
+      </div>
+      <div class="tut-subnivel" id="tsubn-d">
+        <span class="tsubn-max" id="tsubn-d-max">10</span>
+        <span class="tsubn-lbl">d</span>
+      </div>
+      <div class="tut-subnivel" id="tsubn-f">
+        <span class="tsubn-max" id="tsubn-f-max">14</span>
+        <span class="tsubn-lbl">f</span>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="tut-hand">👆</div>
 
 <!-- STUDENT INFO MODAL -->
@@ -656,6 +855,7 @@ body{
 /* ═══════════════════════════════════════════════════
  *  DATA
  * ═══════════════════════════════════════════════════ */
+const ASSET_VER='10';
 const ELEMENTS={
   1:'H',2:'He',3:'Li',4:'Be',5:'B',6:'C',7:'N',8:'O',9:'F',10:'Ne',
   11:'Na',12:'Mg',13:'Al',14:'Si',15:'P',16:'S',17:'Cl',18:'Ar',19:'K',20:'Ca',
@@ -955,8 +1155,8 @@ window.addEventListener('pointerup',e=>{
   document.querySelectorAll('.slot.over').forEach(s=>s.classList.remove('over'));
   chip.classList.remove('drag-source');
   const targetSlot=el&&el.closest('.slot');
-  // Block wrong slot/chip during hand-animation tutorial steps (before any placement)
-  if(TUT.active&&(TUT.step===5||TUT.step===6)&&tutHandRaf!==null){
+  // Block wrong slot/chip during the drag-tutorial steps (1s→slot0, 2s→slot1, 2p→slot2)
+  if(TUT.active&&(TUT.step===5||TUT.step===6)){
     const correctSlot=TUT.step===5?'0':tutStep6b?'2':'1';
     const correctChip=TUT.step===5?'1s':tutStep6b?'2p':'2s';
     const animSrc=TUT.step===5?'.p-cell[data-level="1s"] .chip':tutStep6b?'.p-cell[data-level="2p"] .chip':'.p-cell[data-level="2s"] .chip';
@@ -999,21 +1199,30 @@ window.addEventListener('pointerup',e=>{
       stopHandAnimation();
       tutStep6b=true;
       lockWrongPCells('2p');
-      _playChain(['dialogo8','dialogo8.1','dialogo8.2'],null,[
-        null,
-        null,
-        ()=>{hands6b.forEach(h=>h.remove());hands6b=[];startHandAnim('.p-cell[data-level="2p"] .chip','#slots .slot[data-idx="2"]');}
-      ]);
-      setTimeout(()=>{
-        hands6b.forEach(h=>h.remove());hands6b=[];
-        document.querySelectorAll('#slots .slot.filled .chip').forEach(chip=>{
-          const sup=chip.querySelector('.sup');if(!sup)return;
-          const r=sup.getBoundingClientRect();
-          const h=document.createElement('div');
-          h.style.cssText=`position:fixed;z-index:3800;pointer-events:none;font-size:26px;line-height:1;left:${r.left+r.width/2-16}px;top:${r.top-32}px;animation:handBob 1s ease-in-out infinite;`;
-          h.textContent='👇';document.body.appendChild(h);hands6b.push(h);
+      tutSuppressPlayBtn=false;
+      spotlightEl('left-panel');
+      playTutAudio('dialogo8',()=>{
+        tutPendingFn=()=>{
+          // números dos subníveis voltam ao normal e ilumina o diagrama de Pauling
+          document.querySelectorAll('.chip-sup-pulsing').forEach(el=>el.classList.remove('chip-sup-pulsing'));
+          spotlightEl('right-panel');
+          tutSuppressPlayBtn=true;syncTutPlayBtn();
+          playTutAudio('dialogo8.1',()=>{
+            hands6b.forEach(h=>h.remove());hands6b=[];
+            startHandAnim('.p-cell[data-level="2p"] .chip','#slots .slot[data-idx="2"]');
+          });
+          // aos 9s tudo volta ao normal (remove a iluminação)
+          setPauseableTimer(()=>document.getElementById('tut-spot').classList.remove('on'),9000);
+        };
+        syncTutPlayBtn();
+      });
+      hands6b.forEach(h=>h.remove());hands6b=[];
+      setPauseableTimer(()=>{
+        ['0','1'].forEach(idx=>{
+          const sup=document.querySelector(`#slots .slot[data-idx="${idx}"] .chip .sup`);
+          if(sup)sup.classList.add('chip-sup-pulsing');
         });
-      },1000);
+      },5000);
     }
   }
   if(S.phase==='distribution'){
@@ -1112,28 +1321,18 @@ function checkDistribution(){
     if(TUT.active&&TUT.step===6){
       setTimeout(()=>{
         _playChain(
-          ['dialogo9','dialogo9.1'],
-          ()=>{document.getElementById('tut-audio-next').style.display='block';},
+          ['dialogo9'],
+          ()=>{tutSuppressPlayBtn=false;tutCanNext=true;syncTutPlayBtn();},
           [
-            ()=>{hands6b.forEach(h=>h.remove());hands6b=[];document.getElementById('tut-audio-next').style.display='block';},
-            ()=>{
-              startHandAnim('#slots .slot[data-idx="2"]','#slots .slot[data-idx="0"]');
-              setTimeout(()=>{
-                stopHandAnimation();
-                setTimeout(()=>{
-                  if(!TUT.active)return;
-                  const numEl=document.querySelector('.el-label .n');
-                  if(!numEl)return;
-                  const r=numEl.getBoundingClientRect();
-                  tutHandExtra=document.createElement('div');
-                  tutHandExtra.style.cssText=`position:fixed;z-index:3800;pointer-events:none;font-size:26px;line-height:1;left:${r.left+r.width/2-16}px;top:${r.top-34}px;animation:handBob 1s ease-in-out infinite;`;
-                  tutHandExtra.textContent='👇';
-                  document.body.appendChild(tutHandExtra);
-                },1000);
-              },2000);
-            }
+            ()=>{hands6b.forEach(h=>h.remove());hands6b=[];tutCanNext=false;}
           ]
         );
+        // 6.5s: destaca todos os elétrons (superscritos) da distribuição
+        setPauseableTimer(()=>{
+          document.querySelectorAll('#slots .slot .chip .sup').forEach(sup=>sup.classList.add('chip-sup-pulsing'));
+        },6500);
+        // 8.8s: mãozinha amarela de volta no número atômico, à direita do elemento
+        setPauseableTimer(()=>showYellowHandAtNum(),8800);
       },400);
     }else{
       setTimeout(askMostEnergetic,1500);
@@ -1182,6 +1381,7 @@ function askMostEnergetic(){
 }
 function onPickEnergetic(e){
   if(S.phase!=='energetic')return;
+  clearEvidenceChips();
   const slot=e.currentTarget;
   const slots=[...document.querySelectorAll('#slots .slot')];
   slots.forEach(s=>s.classList.remove('correct','wrong'));
@@ -1205,6 +1405,9 @@ function onPickEnergetic(e){
     playNo();
     showHintBtn();
     setTimeout(()=>slot.classList.remove('wrong'),800);
+    if(TUT.active&&TUT.step===8){
+      setTimeout(()=>playTutAudio('dialogo10.1',null),600);
+    }
   }
 }
 
@@ -1384,6 +1587,38 @@ function submitShell(n,val){
   const slot=document.getElementById(`sv-${n}`);if(!slot)return;
   slot.classList.remove('empty','wrong','correct');slot.textContent=val;
   const shellMap=getShellElectrons(S.distribution);
+  if(TUT.active&&TUT.step===9){
+    if(val===(shellMap[n]||0)){
+      slot.classList.add('correct');S.correctShells.add(n);
+      vib('success');playCerto();showToast('Certo!');
+      if(n===1){
+        const s0=document.querySelector('#slots .slot[data-idx="0"] .chip .sup');
+        if(s0)s0.classList.remove('chip-sup-pulsing');
+        hideLvBracket(1);clearSlotOutlines();
+        setTimeout(()=>{
+          undimAllShellSlots();dimShellSlot(1);
+          undimAllSlots();dimSlot(0);
+          ['1','2'].forEach(i=>{
+            const s=document.querySelector(`#slots .slot[data-idx="${i}"] .chip .sup`);
+            if(s)s.classList.add('chip-sup-pulsing');
+          });
+          playTutAudio('dialogo11.1',null);
+        },700);
+      }else{
+        document.querySelectorAll('.chip-sup-pulsing').forEach(e=>e.classList.remove('chip-sup-pulsing'));
+        SC.shellsOk++;
+        fireConfetti();showToast('Parabéns!');playYes();
+        setTimeout(()=>advanceTutorial(),1500);
+      }
+    }else{
+      SC.totalErrors++;SC.cur.errors++;SC.shellsErrors++;
+      vib('error');playNo();slot.classList.add('wrong');showToast('Tente de novo',true);
+      setTimeout(()=>{slot.classList.remove('wrong');slot.classList.add('empty');slot.textContent='?';},1200);
+      if(n===2){setChipRedHighlight(1);setChipRedHighlight(2);}
+      setTimeout(()=>playTutAudio(n===1?'dialogo11.2':'dialogo11.3',null),500);
+    }
+    return;
+  }
   if(val===(shellMap[n]||0)){
     slot.classList.add('correct');S.correctShells.add(n);
     if(TUT.active&&shellBlinkPending){
@@ -1418,15 +1653,18 @@ let kv='',kCtx='valence',kShellN=null;
 function openKeypad(ctx,shellN=null){
   kv='';kCtx=ctx;kShellN=shellN;keypadDisplay.textContent='0';keypadMask.classList.add('show');
   if(TUT.active){
-    document.getElementById('tut-skip').style.display='none';
     const b=document.getElementById('tut-balloon');
     b.style.opacity='0';setTimeout(()=>{b.className='tut-balloon';b.style.opacity='';},200);
   }
 }
 function closeKeypad(){
   keypadMask.classList.remove('show');
-  if(TUT.active)document.getElementById('tut-skip').style.display='block';
 }
+document.getElementById('ep-confirm-btn').addEventListener('click',()=>{
+  const drum=document.getElementById('ep-drum');
+  const val=Math.max(1,Math.round(drum.scrollTop/EP_H)+1);
+  confirmEpValue(val);
+});
 keypadMask.addEventListener('click',e=>{if(e.target===keypadMask)closeKeypad();});
 document.getElementById('keypad').addEventListener('click',e=>{
   const k=e.target.dataset.k;if(!k)return;
@@ -1593,7 +1831,7 @@ function showElectronPicker(lastSlot){
   const tp=document.createElement('div');tp.className='ep-pad';drum.appendChild(tp);
   for(let i=1;i<=maxE;i++){
     const it=document.createElement('div');it.className='ep-item';it.textContent=i;
-    it.addEventListener('click',()=>{drum.scrollTop=(i-1)*EP_H;confirmEpValue(i);});
+    it.addEventListener('click',()=>{drum.scrollTop=(i-1)*EP_H;});
     drum.appendChild(it);
   }
   const bp=document.createElement('div');bp.className='ep-pad';drum.appendChild(bp);
@@ -1605,6 +1843,11 @@ function showElectronPicker(lastSlot){
   const top=Math.max(10,Math.min(pr.top+20,window.innerHeight-boxH-10));
   box.style.top=top+'px';box.style.left=left+'px';
   document.getElementById('ep-overlay').classList.add('show');
+  if(TUT.active&&TUT.step===6){
+    const epAudioMap={5:'dialogo8.2',6:'dialogo8.3',7:'dialogo8.4'};
+    const epAudio=epAudioMap[S.selectedZ];
+    if(epAudio)playTutAudio(epAudio,null);
+  }
   vib('tap');
 }
 function hideElectronPicker(){
@@ -1686,10 +1929,28 @@ let STUDENT_NAME='';
   });
 })();
 
-document.getElementById('btn-cover').addEventListener('click',()=>{
-  vib('tap');document.getElementById('info-mask').classList.add('show');
+function _proceedFromCover(){
+  document.getElementById('cover').style.display='none';
+  if(localStorage.getItem('tut_done')){
+    requestAnimationFrame(()=>{
+      const sw=document.querySelector('.strip-wrap');if(!sw)return;
+      const r=sw.getBoundingClientRect();
+      const msg=document.getElementById('strip-msg');
+      msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
+      msg.style.width=r.width+'px';
+      msg.textContent='Escolha um elemento';msg.style.display='block';
+    });
+  }else{
+    tutWaitingPlay=true;
+    document.getElementById('tut-blocker').style.display='block';
+    document.getElementById('btn-tutorial').classList.add('wait-play');
+  }
+}
+
+function openStudentInfoModal(){
+  document.getElementById('info-mask').classList.add('show');
   setTimeout(()=>document.getElementById('inp-name').focus(),80);
-});
+}
 
 (function(){
   const inp=document.getElementById('inp-name');
@@ -1699,20 +1960,13 @@ document.getElementById('btn-cover').addEventListener('click',()=>{
   document.getElementById('btn-enter').addEventListener('click',()=>{
     vib('tap');STUDENT_NAME=inp.value.trim();
     document.getElementById('info-mask').classList.remove('show');
-    document.getElementById('cover').style.display='none';
-    if(localStorage.getItem('tut_done')){
-      requestAnimationFrame(()=>{
-        const sw=document.querySelector('.strip-wrap');if(!sw)return;
-        const r=sw.getBoundingClientRect();
-        const msg=document.getElementById('strip-msg');
-        msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
-        msg.style.width=r.width+'px';
-        msg.textContent='Escolha um elemento';msg.style.display='block';
-      });
-    }
-    setTimeout(startTutorial,2000);
+    _proceedFromCover();
   });
 })();
+
+document.getElementById('btn-cover').addEventListener('click',()=>{
+  vib('tap');_proceedFromCover();
+});
 
 /* ═══════════════════════════════════════════════════
  *  TUTORIAL
@@ -1729,7 +1983,9 @@ let shellBlinkPending=null;
 let shellBlinkIdx=0;
 let valenceBlinkTimer=null;
 let valenceBlinkActive=false;
-let tutAudio=null,tutAudio2=null;
+let tutAudio=null,tutAudio2=null,tutCanNext=false,tutWaitingPlay=false,tutPendingFn=null,tutSuppressPlayBtn=false;
+let tutPauseableTimers=[];
+let tutEvidenceEls=[];
 let tutGlowEls=[];
 let tutGlowTimeouts=[];
 function highlightAllPCells(){
@@ -1780,19 +2036,32 @@ function lockWrongPCells(correctLevel){
 function unlockAllPCells(){
   document.querySelectorAll('.p-cell .chip').forEach(c=>c.classList.remove('locked'));
 }
+function syncTutPlayBtn(){
+  const btn=document.getElementById('btn-tutorial');if(!btn)return;
+  const a1=tutAudio,a2=tutAudio2;
+  const isPlaying=(a1&&!a1.paused&&!a1.ended&&!a1._done)||(a2&&!a2.paused&&!a2.ended&&!a2._done);
+  const ended=(a1&&(a1.ended||a1._done))||(a2&&(a2.ended||a2._done));
+  const waitNext=!isPlaying&&(!!tutPendingFn||ended);
+  // ⏸ enquanto toca, ▶ verde quando parado
+  btn.textContent=isPlaying?'⏸':'▶';
+  btn.classList.toggle('playing',!!isPlaying);
+  // pulso verde quando um áudio terminou e falta um toque para continuar
+  btn.classList.toggle('audio-done',!!waitNext&&TUT.active);
+  // some por completo nos passos marcados (ex.: dialogo6/7, onde a ação é arrastar)
+  btn.classList.toggle('btn-hidden',!!tutSuppressPlayBtn);
+  btn.style.zIndex=TUT.active?'3700':'';
+}
 function _playOne(file,onEnded){
-  const a=new Audio('audio/'+file+'.mp3');
+  const a=new Audio('audio/'+file+'.mp3?v='+ASSET_VER);
   let fired=false;
-  const cb=onEnded?()=>{if(!fired){fired=true;if(a._poll)clearInterval(a._poll);onEnded();}}:null;
-  if(cb){
-    a.onended=cb;
-    a.onerror=cb;
-    a._poll=setInterval(()=>{
-      if(fired){clearInterval(a._poll);return;}
-      if(a.ended||(a.duration&&isFinite(a.duration)&&a.currentTime>=a.duration-0.15)){cb();}
-    },200);
-  }
-  a.play().catch(()=>{if(cb)cb();});
+  const finish=()=>{syncTutPlayBtn();if(onEnded)onEnded();};
+  const cb=()=>{if(!fired){fired=true;a._done=true;if(a._poll)clearInterval(a._poll);finish();}};
+  a.onended=cb;a.onerror=cb;
+  a._poll=setInterval(()=>{
+    if(fired){clearInterval(a._poll);return;}
+    if(a.ended||(a.duration&&isFinite(a.duration)&&a.currentTime>=a.duration-0.15)){cb();}
+  },200);
+  a.play().catch(()=>cb()).then(()=>syncTutPlayBtn());
   return a;
 }
 function playTutAudio(file,onEnded){
@@ -1822,28 +2091,335 @@ function _playChain(files,onDone,onSteps){
 function stopTutAudio(){
   [tutAudio,tutAudio2].forEach(a=>{if(a){if(a._poll)clearInterval(a._poll);a.pause();a.currentTime=0;}});
   tutAudio=null;tutAudio2=null;
+  syncTutPlayBtn();
+}
+function setPauseableTimer(fn,delay){
+  const t={fn,remaining:delay,startedAt:Date.now(),id:null};
+  t.id=setTimeout(()=>{tutPauseableTimers=tutPauseableTimers.filter(x=>x!==t);fn();},delay);
+  tutPauseableTimers.push(t);return t;
+}
+function pausePauseableTimers(){
+  const now=Date.now();
+  tutPauseableTimers.forEach(t=>{clearTimeout(t.id);t.id=null;t.remaining=Math.max(0,t.remaining-(now-t.startedAt));});
+}
+function resumePauseableTimers(){
+  const now=Date.now();
+  tutPauseableTimers.forEach(t=>{if(t.id!==null)return;t.startedAt=now;t.id=setTimeout(()=>{tutPauseableTimers=tutPauseableTimers.filter(x=>x!==t);t.fn();},t.remaining);});
+}
+function clearPauseableTimers(){
+  tutPauseableTimers.forEach(t=>clearTimeout(t.id));tutPauseableTimers=[];
+}
+// DEV: segurar o botão pula pro próximo áudio, realizando antes
+// todos os eventos que aconteceriam durante o áudio atual.
+function fastForwardAudio(){
+  if(!TUT.active)return;
+  // 1) realiza imediatamente, em ordem cronológica, os eventos agendados deste áudio
+  const timers=tutPauseableTimers.slice()
+    .sort((a,b)=>(a.startedAt+a.remaining)-(b.startedAt+b.remaining));
+  tutPauseableTimers=[];
+  timers.forEach(t=>clearTimeout(t.id));
+  timers.forEach(t=>{try{t.fn();}catch(e){console.warn('fast-forward timer:',e);}});
+  // 2) encerra o áudio que está tocando -> aciona o próximo áudio/etapa
+  const active=[tutAudio2,tutAudio].find(a=>a&&!a.ended&&!a._done);
+  if(active){
+    active.pause();
+    if(active._poll)clearInterval(active._poll);
+    if(typeof active.onended==='function')active.onended();
+    // se o término deixou uma ação pendente (tocar o próximo áudio), dispara-a
+    if(tutPendingFn){const fn=tutPendingFn;tutPendingFn=null;fn();}
+  }else if(tutPendingFn){
+    const fn=tutPendingFn;tutPendingFn=null;fn();
+  }else if(tutCanNext){
+    tutCanNext=false;stopTutAudio();advanceTutorial();
+  }
+}
+function showTutImage(src,title){
+  const wrap=document.getElementById('tut-overlay-img');
+  wrap.querySelector('img').src=src+'?v='+ASSET_VER;
+  const t=document.getElementById('tut-overlay-title');
+  t.textContent=title||'';t.style.display=title?'':'none';
+  wrap.style.display='flex';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>wrap.classList.add('show')));
+}
+function hideTutImage(instant){
+  const wrap=document.getElementById('tut-overlay-img');
+  const img=wrap.querySelector('img');
+  wrap.classList.remove('show');
+  if(instant){img.classList.remove('zoomed');wrap.style.display='none';img.src='';}
+  else setTimeout(()=>{img.classList.remove('zoomed');wrap.style.display='none';img.src='';},800);
+}
+function hideTutAtom(instant){
+  const el=document.getElementById('tut-atom');
+  if(instant){
+    el.style.opacity='';el.style.transition='';
+    el.style.display='none';
+    el.querySelectorAll('.show').forEach(e=>e.classList.remove('show'));
+    return;
+  }
+  el.style.transition='opacity .6s ease';
+  el.style.opacity='0';
+  setTimeout(()=>{
+    el.style.display='none';el.style.opacity='';el.style.transition='';
+    el.querySelectorAll('.show').forEach(e=>e.classList.remove('show'));
+  },600);
+}
+function startAtomAnimation(){
+  const show=id=>document.getElementById(id).classList.add('show');
+  document.getElementById('tut-atom').style.display='flex';
+  setPauseableTimer(()=>show('tut-atom-title'),2800);
+  setPauseableTimer(()=>show('atom-nucleus'),5000);
+  setPauseableTimer(()=>{show('atom-orbit-0');show('atom-electrons-0');},7000);
+  setPauseableTimer(()=>{
+    for(let i=1;i<=6;i++)show('atom-orbit-'+i);
+    show('atom-niv-txt');
+  },11000);
+  setPauseableTimer(()=>{show('atom-label-0');show('atom-lv-0');},15000);
+  setPauseableTimer(()=>{show('atom-label-1');show('atom-lv-1');},18000);
+  const lblTimes=[19500,20125,20750,21375,22000];
+  [2,3,4,5,6].forEach((lvl,idx)=>setPauseableTimer(()=>{show('atom-label-'+lvl);show('atom-lv-'+lvl);},lblTimes[idx]));
+  // subníveis
+  setPauseableTimer(()=>show('tut-atom-sub-title'),28700);
+  setPauseableTimer(()=>show('tsubn-s'),31000);
+  setPauseableTimer(()=>show('tsubn-p'),32000);
+  setPauseableTimer(()=>show('tsubn-d'),33000);
+  setPauseableTimer(()=>show('tsubn-f'),34000);
+  // pulsações
+  setPauseableTimer(()=>pulseSubnivel('tsubn-s'),43000);
+  setPauseableTimer(()=>pulseSubnivel('tsubn-p'),46600);
+  setPauseableTimer(()=>pulseSubnivel('tsubn-d'),50500);
+  setPauseableTimer(()=>pulseSubnivel('tsubn-f'),52000);
+  // contagens máximas
+  setPauseableTimer(()=>show('tsubn-s-max'),45000);
+  setPauseableTimer(()=>show('tsubn-p-max'),48400);
+  setPauseableTimer(()=>show('tsubn-d-max'),51000);
+  setPauseableTimer(()=>show('tsubn-f-max'),54000);
+}
+function pulseSubnivel(parentId){
+  const el=document.querySelector('#'+parentId+' .tsubn-lbl');
+  if(!el)return;
+  el.classList.remove('pulse2');void el.offsetWidth;
+  el.classList.add('pulse2');
+  el.addEventListener('animationend',()=>el.classList.remove('pulse2'),{once:true});
+}
+function startDialogo12Chain(afterAll){
+  clearPauseableTimers();
+  hideTutAtom(false);
+  setPauseableTimer(()=>showTutImage('imagens/linus_pauling.png','Linus Pauling'),3000);
+  setPauseableTimer(()=>{
+    const img=document.querySelector('#tut-overlay-img img');
+    if(img)img.classList.add('zoomed');
+  },16000);
+  playTutAudio('dialogo1.2',()=>{
+    tutPendingFn=()=>{
+      clearPauseableTimers();
+      playTutAudio('dialogo1.3',()=>{
+        tutPendingFn=()=>{
+          hideTutImage(false);
+          setTimeout(()=>advanceTutorial(),350);
+        };
+        syncTutPlayBtn();
+      });
+    };
+    syncTutPlayBtn();
+  });
+}
+function highlightPaulingChip(level){
+  const chip=document.querySelector(`.p-cell[data-level="${level}"] .chip`);
+  if(!chip)return;
+  if(tutLastChipEl){tutLastChipEl.style.boxShadow='';tutLastChipEl.style.outline='';tutLastChipEl.style.transform='';tutLastChipEl.style.transition='';}
+  tutLastChipEl=chip;
+  chip.style.transition='transform .35s ease, box-shadow .35s ease';
+  chip.style.transform='scale(1.45) translateY(-4px)';
+  chip.style.boxShadow='0 0 0 5px rgba(33,200,122,.8),0 0 22px rgba(33,200,122,.5)';
+  chip.style.outline='2px solid #21c87a';
+}
+function pulseChipSup(level){
+  const sup=document.querySelector(`.p-cell[data-level="${level}"] .chip .sup`);
+  if(sup)sup.classList.add('chip-sup-pulsing');
+}
+function showLvBracket(id,slotIdxs,label,color){
+  hideLvBracket(id);
+  const slots=document.querySelectorAll('#slots .slot');
+  const first=slots[slotIdxs[0]],last=slots[slotIdxs[slotIdxs.length-1]];
+  if(!first||!last)return;
+  const fr=first.getBoundingClientRect(),lr=last.getBoundingClientRect();
+  const el=document.createElement('div');
+  el.id='lv-bracket-'+id;el.className='lv-bracket-el';
+  el.style.left=fr.left+'px';el.style.top=(fr.bottom+3)+'px';el.style.width=(lr.right-fr.left)+'px';
+  el.innerHTML=`<div class="lv-bracket-bar" style="border-color:${color}"></div>`
+    +`<div class="lv-bracket-text" style="color:${color}">${label}</div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show')));
+}
+function hideLvBracket(id){const e=document.getElementById('lv-bracket-'+id);if(e)e.remove();}
+function hideLvBrackets(){document.querySelectorAll('[id^="lv-bracket-"]').forEach(e=>e.remove());}
+function pulseLvBracket(id){
+  const el=document.getElementById('lv-bracket-'+id);if(!el)return;
+  const txt=el.querySelector('.lv-bracket-text');if(!txt)return;
+  const steps=[1.25,1,1.25,1];let i=0;
+  const next=()=>{if(i>=steps.length){txt.style.transform='';txt.style.transition='';return;}
+    txt.style.transition='transform 170ms ease';txt.style.transform=`scale(${steps[i++]})`;setTimeout(next,170);};
+  next();
+}
+function setSlotOutline(idx,color){
+  const s=document.querySelector(`#slots .slot[data-idx="${idx}"]`);if(s)s.style.outline=`2.5px solid ${color}`;}
+function clearSlotOutlines(){document.querySelectorAll('#slots .slot').forEach(s=>s.style.outline='');}
+function dimSlot(idx){
+  const s=document.querySelector(`#slots .slot[data-idx="${idx}"]`);
+  if(s){s.style.opacity='0.3';s.style.pointerEvents='none';}}
+function undimAllSlots(){document.querySelectorAll('#slots .slot').forEach(s=>{s.style.opacity='';s.style.pointerEvents='';})}
+function dimShellSlot(n){const e=document.getElementById('sv-'+n);if(e){e.style.opacity='0.3';e.style.pointerEvents='none';}}
+function undimAllShellSlots(){document.querySelectorAll('.shell-val').forEach(e=>{e.style.opacity='';e.style.pointerEvents='';})}
+function pulseCardN(selector,n){
+  const el=document.querySelector(selector);if(!el)return;
+  const base=parseFloat((el.style.transform||'').replace(/[^0-9.]/g,''))||1;
+  const peak=base*1.22;const steps=[];
+  for(let i=0;i<n;i++)steps.push(peak,base);
+  let i=0;const dur=160;
+  const next=()=>{if(i>=steps.length){el.style.transform=base===1?'':(`scale(${base})`);el.style.transition='transform .2s ease';return;}
+    el.style.transition=`transform ${dur}ms ease`;el.style.transform=`scale(${steps[i++]})`;setTimeout(next,dur);};
+  next();
+}
+function setChipRedHighlight(slotIdx){
+  const c=document.querySelector(`#slots .slot[data-idx="${slotIdx}"] .chip`);
+  if(c){c.style.boxShadow='0 0 0 3px #ef4444,0 0 10px rgba(239,68,68,.5)';c.style.outline='2px solid #ef4444';}
+}
+function clearChipHighlights(){
+  document.querySelectorAll('#slots .slot .chip').forEach(c=>{c.style.boxShadow='';c.style.outline='';});
+}
+function evidenceChip(selector,scale){
+  const el=document.querySelector(selector);if(!el)return;
+  tutEvidenceEls.push(el);
+  el.classList.add('chip-evidence');
+  el.style.transform=`scale(${scale})`;
+}
+let _pulseGeneration=0; // incrementa ao cancelar — timeouts órfãos não escrevem
+function pulseCard(selector){
+  const el=document.querySelector(selector);if(!el)return;
+  const gen=++_pulseGeneration;
+  const base=parseFloat(el.style.transform.replace(/[^0-9.]/g,''))||1;
+  const peak=base*1.18;
+  const steps=[peak,base,peak,base];
+  const dur=220;let i=0;
+  const next=()=>{
+    if(_pulseGeneration!==gen)return; // cancelado
+    if(i>=steps.length){el.style.transform=`scale(${base})`;return;}
+    el.style.transition=`transform ${dur}ms ease`;
+    el.style.transform=`scale(${steps[i++]})`;
+    setTimeout(next,dur);
+  };
+  next();
+}
+function clearEvidenceChips(){
+  _pulseGeneration++; // cancela qualquer pulseCard em andamento
+  tutEvidenceEls.forEach(el=>{
+    el.classList.remove('chip-evidence','card-pulsing');
+    el.style.transform='';el.style.transition='';
+  });
+  tutEvidenceEls=[];
+  // garante reset de qualquer slot que tenha sido escalado
+  document.querySelectorAll('#slots .slot').forEach(s=>{s.style.transform='';s.style.transition='';});
+}
+function spotlightEl(id){
+  const el=document.getElementById(id);if(!el)return;
+  const pad=8,r=el.getBoundingClientRect(),sp=document.getElementById('tut-spot');
+  sp.style.left=(r.left-pad)+'px';sp.style.top=(r.top-pad)+'px';
+  sp.style.width=(r.width+pad*2)+'px';sp.style.height=(r.height+pad*2)+'px';
+  sp.classList.add('on');
+}
+function showYellowHandAtNum(){
+  const numEl=document.querySelector('.el-label .n');if(!numEl)return;
+  if(tutHandExtra){tutHandExtra.remove();tutHandExtra=null;}
+  const r=numEl.getBoundingClientRect();
+  tutHandExtra=document.createElement('div');
+  tutHandExtra.style.cssText=`position:fixed;z-index:3800;pointer-events:none;font-size:26px;line-height:1;`
+    +`left:${r.left+r.width/2-23}px;top:${r.top-32}px;`
+    +`animation:handBob 1s ease-in-out infinite;`;
+  tutHandExtra.textContent='👇';
+  document.body.appendChild(tutHandExtra);
 }
 const TUT_STEPS=[
   {text:'dialogo1',
-   spot:'left-panel',balloon:'right-panel',arr:null,wait:false,fullDark:true,offset:{top:-131},hideBalloon:true,audio:'dialogo1'},
+   spot:'left-panel',balloon:'right-panel',arr:null,wait:false,fullDark:true,offset:{top:-131},hideBalloon:true,audio:'dialogo1',singleAudio:true,
+   imageAt:{time:6,src:'imagens/linus_pauling.png',thenAudio:'dialogo1.1',title:'Distribuição eletrônica',atomOn:true,afterChain:true}},
   {text:'dialogo2',
-   spot:'strip-wrap',balloon:'left-panel',arr:'up',wait:true,lockNext:true,delay:1000,hideBalloon:true,audio:'dialogo2'},
+   spot:'strip-wrap',balloon:'left-panel',arr:'up',wait:true,lockNext:true,hideBalloon:true,audio:'dialogo2',hidePlayBtn:true},
   {text:'dialogo3',
-   spot:'left-panel',balloon:'right-panel',arr:'up',wait:false,offset:{top:-86},delay:1000,hideBalloon:true,audio:'dialogo3',handAfter:{delay:5000,target:'.el-label .n'}},
+   balloon:'right-panel',arr:'up',wait:false,offset:{top:-86},hideBalloon:true,audio:'dialogo3',
+   onAudioStart:()=>{
+     setPauseableTimer(()=>spotlightEl('right-panel'),1800);
+     setPauseableTimer(()=>showYellowHandAtNum(),14700);
+     setPauseableTimer(()=>spotlightEl('left-panel'),7800);
+   }},
   {text:'dialogo4',
-   spot:'right-panel',balloon:'left-panel',arr:'down',wait:false,offset:{top:-22},delay:1000,hideBalloon:true,audioChain:['dialogo4','dialogo4.1'],audioChainOnSteps:[null,highlightAllPCells]},
+   spot:'right-panel',balloon:'left-panel',arr:'down',wait:false,offset:{top:-22},hideBalloon:true,audioChain:['dialogo4'],
+   onAudioStart:()=>{
+     setPauseableTimer(()=>highlightPaulingChip('1s'),1700);
+     setPauseableTimer(()=>pulseChipSup('1s'),5000);
+   }},
   {text:'dialogo5',
-   spot:'right-panel',balloon:'left-panel',arr:'down',wait:false,onShow:'arrowAnim',offset:{top:-33},hideBalloon:true,audioChain:['dialogo5','dialogo5.1','dialogo5.2']},
+   spot:'right-panel',balloon:'left-panel',arr:'down',wait:false,onShow:'arrowAnim',offset:{top:-33},hideBalloon:true,audioChain:['dialogo5']},
   {text:'dialogo6',
-   spot:null,balloon:'left-panel',arr:null,wait:false,onShow:'handAnim1',freeInteraction:true,noSpot:true,hideNav:true,lockNext:true,pinBottom:true,offset:{top:-65},hideBalloon:true,audio:'dialogo6',singleAudio:true},
+   spot:null,balloon:'left-panel',arr:null,wait:false,onShow:'handAnim1',freeInteraction:true,noSpot:true,hideNav:true,lockNext:true,pinBottom:true,offset:{top:-65},hideBalloon:true,audio:'dialogo6',singleAudio:true,hidePlayBtn:true},
   {text:'dialogo7',
-   spot:null,balloon:'left-panel',arr:null,wait:false,onShow:'handAnim2',freeInteraction:true,noSpot:true,hideNav:true,lockNext:true,pinBottom:true,hideBalloon:true,audio:'dialogo7'},
+   spot:null,balloon:'left-panel',arr:null,wait:false,onShow:'handAnim2',freeInteraction:true,noSpot:true,hideNav:true,lockNext:true,pinBottom:true,hideBalloon:true,audio:'dialogo7',hidePlayBtn:true},
   {text:'Aqui no app, o último subnível ajusta a quantidade de elétrons que falta automaticamente, por praticidade. Mas se for fazer no caderno, num exercício, você vai ter que colocar a quantidade manualmente.',
    spot:null,balloon:'left-panel',arr:null,freeInteraction:true,noSpot:true,justify:true,onShow:'highlightLastChip',offset:{top:84},disabled:true},
   {text:'A distribuição de elétrons é em <span style="background:#fff8c0;padding:1px 4px;border-radius:4px;font-weight:900;color:#1860a8;">ordem crescente de energia</span>, ou seja, do subnível menos energético pro mais energético. Então o último card sempre será o de maior energia.',
-   spot:null,balloon:'left-panel',arr:null,freeInteraction:true,noSpot:true,html:true,hideNav:true,offset:{top:109},justify:true,hideBalloon:true,lockNext:true,audioChain:['dialogo10','dialogo10.1','dialogo10.2','dialogo10.3','dialogo10.4'],audioChainOnSteps:[null,askMostEnergetic,null,startDragHandAnim,stopDragHandAnim]},
+   spot:null,balloon:'left-panel',arr:null,freeInteraction:true,noSpot:true,html:true,hideNav:true,offset:{top:109},justify:true,hideBalloon:true,lockNext:true,audioChain:['dialogo10'],
+   onAudioStart:()=>{
+     document.querySelectorAll('.chip-sup-pulsing').forEach(el=>el.classList.remove('chip-sup-pulsing'));
+     setPauseableTimer(()=>{askMostEnergetic();tutSuppressPlayBtn=true;syncTutPlayBtn();},8500);
+     setPauseableTimer(()=>evidenceChip('#slots .slot[data-idx="0"]',1.05),15000);
+     setPauseableTimer(()=>evidenceChip('#slots .slot[data-idx="1"]',1.18),16000);
+     setPauseableTimer(()=>evidenceChip('#slots .slot[data-idx="2"]',1.31),17000);
+     setPauseableTimer(()=>pulseCard('#slots .slot[data-idx="0"]'),18000);
+     setPauseableTimer(()=>pulseCard('#slots .slot[data-idx="2"]'),19000);
+   }},
   {text:'Separei os subníveis de cada nível com cores específicas pra você enxergar os níveis.',
-   spot:null,balloon:'left-panel',arr:null,freeInteraction:true,noSpot:true,hideNav:true,hideBalloon:true,lockNext:true,audioChain:['dialogo11','dialogo11.1'],audioChainOnSteps:[null,restoreShellColors]},
+   spot:null,balloon:'left-panel',arr:null,freeInteraction:true,noSpot:true,hideNav:true,hideBalloon:true,lockNext:true,
+   audio:'dialogo11',singleAudio:true,
+   onAudioEnd:()=>{
+     const s0=document.querySelector('#slots .slot[data-idx="0"] .chip .sup');
+     if(s0)s0.classList.add('chip-sup-pulsing');
+   },
+   onAudioStart:()=>{
+     // 4.5s: pergunta 2
+     setPauseableTimer(()=>{
+       if(S.phase!=='shells')askShells();
+       tutSuppressPlayBtn=true;syncTutPlayBtn();
+     },4500);
+     // 14.5s: 3 pulsos no 1s² + contorno verde + bracket "1o nível"
+     setPauseableTimer(()=>{
+       pulseCardN('#slots .slot[data-idx="0"]',3);
+       setSlotOutline(0,'#22c55e');
+       showLvBracket(1,[0],'1o nível','#22c55e');
+     },14500);
+     // 16.2s: 3 pulsos no 2s²+2p + contorno vermelho + bracket "2o nível"
+     setPauseableTimer(()=>{
+       pulseCardN('#slots .slot[data-idx="1"]',3);
+       pulseCardN('#slots .slot[data-idx="2"]',3);
+       setSlotOutline(1,'#ef4444');setSlotOutline(2,'#ef4444');
+       showLvBracket(2,[1,2],'2o nível','#ef4444');
+     },16200);
+     // 22.7s: 2 pulsos no 1s² e no bracket "1o nível"
+     setPauseableTimer(()=>{
+       pulseCardN('#slots .slot[data-idx="0"]',2);
+       pulseLvBracket(1);
+     },22700);
+     // 24.7s: 2 pulsos nos subníveis e no bracket "2o nível"
+     setPauseableTimer(()=>{
+       pulseCardN('#slots .slot[data-idx="1"]',2);
+       pulseCardN('#slots .slot[data-idx="2"]',2);
+       pulseLvBracket(2);
+     },24700);
+     // 28s: destaca nível 1, escurece nível 2 (dica visual)
+     setPauseableTimer(()=>{
+       showLvBracket(1,[0],'1o nível','#22c55e');
+       dimSlot(1);dimSlot(2);
+       dimShellSlot(2);
+     },28000);
+   }},
   {text:'A camada de valência é sempre a última camada da distribuição. Se esse átomo tem duas camadas, a última é a segunda (<span style="background:#fff8c0;padding:1px 4px;border-radius:4px;font-weight:900;color:#886500;">destacada em amarelo</span>). Some os elétrons desses subníveis e você terá os elétrons da camada de valência.',
    spot:null,balloon:'left-panel',arr:null,freeInteraction:true,noSpot:true,html:true,hideNav:true,hideBalloon:true,lockNext:true,audioChain:['dialogo12','dialogo12.1'],audioChainOnSteps:[null,startValenceBlink]},
 ];
@@ -1852,12 +2428,18 @@ function startTutorial(){
   TUT.active=true;
   document.getElementById('tut-blocker').style.display='block';
   document.getElementById('tut-spot').classList.add('on');
-  document.getElementById('tut-skip').style.display='block';
-  document.getElementById('btn-tutorial').style.display='none';
   showTutStep(0);
 }
 function showTutStep(i){
   if(TUT_STEPS[i]&&TUT_STEPS[i].disabled){showTutStep(i+1);return;}
+  clearPauseableTimers();
+  clearEvidenceChips();
+  hideLvBrackets();clearSlotOutlines();clearChipHighlights();undimAllSlots();undimAllShellSlots();
+  tutSuppressPlayBtn=!!(TUT_STEPS[i]&&TUT_STEPS[i].hidePlayBtn);
+  document.querySelectorAll('.chip-sup-pulsing').forEach(el=>el.classList.remove('chip-sup-pulsing'));
+  tutPendingFn=null;
+  hideTutImage(true);
+  hideTutAtom(true);
   if(i!==6){tutStep6b=false;hands6b.forEach(h=>h.remove());hands6b=[];}
   if(tutHandExtra){tutHandExtra.remove();tutHandExtra=null;}
   stopDragHandAnim();
@@ -1867,7 +2449,13 @@ function showTutStep(i){
   clearPCellHighlight();
   stopArrowAnimation();
   stopHandAnimation();
-  if(tutLastChipEl){tutLastChipEl.style.boxShadow='';tutLastChipEl.style.outline='';tutLastChipEl=null;}
+  if(tutLastChipEl){
+    tutLastChipEl.style.boxShadow='';tutLastChipEl.style.outline='';
+    tutLastChipEl.style.transform='';tutLastChipEl.style.transition='';
+    const _sup=tutLastChipEl.querySelector('.sup');
+    if(_sup)_sup.classList.remove('chip-sup-pulsing');
+    tutLastChipEl=null;
+  }
   TUT.step=i;
   const cfg=TUT_STEPS[i];
   const balloon=document.getElementById('tut-balloon');
@@ -1919,10 +2507,8 @@ function showTutStep(i){
     if(S.selectedZ===null){
       TUT.scoreSnapshot={...SC,cur:{...SC.cur}};
       selectElement(5);
-      setTimeout(()=>{lockWrongPCells('1s');startHandAnim('.p-cell[data-level="1s"] .chip','#slots .slot[data-idx="0"]');},700);
-    }else{
-      setTimeout(()=>{lockWrongPCells('1s');startHandAnim('.p-cell[data-level="1s"] .chip','#slots .slot[data-idx="0"]');},350);
     }
+    setPauseableTimer(()=>{lockWrongPCells('1s');startHandAnim('.p-cell[data-level="1s"] .chip','#slots .slot[data-idx="0"]');},10000);
   }else if(cfg.onShow==='handAnim2'){
     setTimeout(()=>{lockWrongPCells('2s');startHandAnim('.p-cell[data-level="2s"] .chip','#slots .slot[data-idx="1"]');},350);
   }else if(cfg.onShow==='highlightLastChip'){
@@ -1933,10 +2519,34 @@ function showTutStep(i){
       tutLastChipEl.style.outline='2.5px solid #ff3c3c';
     }
   }
-  document.getElementById('tut-audio-next').style.display='none';
+  tutCanNext=false;
   if(cfg.audioChain||cfg.audio){
-    const showBtns=()=>{if(cfg.autoAdvance)advanceTutorial();};
-    if(!cfg.lockNext)document.getElementById('tut-audio-next').style.display='block';
+    const afterAll=()=>{if(cfg.autoAdvance)advanceTutorial();};
+    const showBtns=()=>{
+      if(cfg.imageAt&&cfg.imageAt.thenAudio){
+        tutPendingFn=()=>{
+          tutCanNext=false;
+          hideTutImage();
+          if(cfg.imageAt.atomOn)startAtomAnimation();
+          playTutAudio(cfg.imageAt.thenAudio,()=>{
+            if(cfg.imageAt.afterChain){
+              tutPendingFn=()=>startDialogo12Chain(afterAll);
+              syncTutPlayBtn();
+            }else{tutCanNext=true;afterAll();}
+          });
+        };
+        syncTutPlayBtn();
+        return;
+      }
+      if(cfg.imageAt)hideTutImage();
+      if(cfg.onAudioEnd)cfg.onAudioEnd();
+      afterAll();
+    };
+    if(!cfg.lockNext)tutCanNext=true;
+    if(cfg.imageAt){
+      setPauseableTimer(()=>showTutImage(cfg.imageAt.src,cfg.imageAt.title),cfg.imageAt.time*1000);
+    }
+    if(cfg.onAudioStart)cfg.onAudioStart();
     if(cfg.audioChain)_playChain(cfg.audioChain,showBtns,cfg.audioChainOnSteps||null);
     else cfg.singleAudio?playTutAudio(cfg.audio,showBtns):playTutAudioPair(cfg.audio,true,showBtns);
   }
@@ -1976,14 +2586,13 @@ function endTutorial(opts){
   stopDragHandAnim();
   stopShellBlink();
   stopValenceBlink();
-  document.getElementById('tut-audio-next').style.display='none';
+  tutCanNext=false;
   localStorage.setItem('tut_done','1');
   TUT.active=false;
   if(TUT.liftedEl){TUT.liftedEl.style.position='';TUT.liftedEl.style.zIndex='';TUT.liftedEl=null;}
   document.getElementById('tut-blocker').style.display='none';
   document.getElementById('tut-spot').classList.remove('on');
-  document.getElementById('tut-skip').style.display='none';
-  document.getElementById('btn-tutorial').style.display='';
+  syncTutPlayBtn();
   const b=document.getElementById('tut-balloon');
   b.style.opacity='0';setTimeout(()=>{b.className='tut-balloon';b.style.opacity='';},250);
   if(!opts.skipResume&&TUT.resumeZ!=null){
@@ -2088,7 +2697,6 @@ function showTutResult(ok){
 }
 
 document.getElementById('tut-next').addEventListener('click',()=>{vib('tap');advanceTutorial();});
-document.getElementById('tut-audio-next').addEventListener('click',()=>{vib('tap');stopTutAudio();advanceTutorial();});
 document.getElementById('tut-prev').addEventListener('click',()=>{vib('tap');goBackTutorial();});
 function resetToIdle(allElements){
   closeKeypad();
@@ -2131,31 +2739,77 @@ function holdActivate(el,onActivate,ms=1000){
   el.addEventListener('pointerleave',cleanup);
 }
 
-holdActivate(document.getElementById('btn-tutorial'),()=>{
-  const inExercise=S.selectedZ!==null&&S.phase!=='idle'&&S.phase!=='done';
-  if(TUT.active)endTutorial({skipResume:true});
-  TUT.resumeZ=inExercise?S.selectedZ:null;
-  localStorage.removeItem('tut_done');
-  if(!SC.completed){
-    Object.assign(SC,{distOk:0,energeticOk:0,valenceOk:0,shellsOk:0,totalErrors:0,totalHints:0,distErrors:0,epErrors:0,energeticErrors:0,valenceErrors:0,shellsErrors:0,completed:0,cur:{errors:0,hints:0}});
+(function(){
+  const btn=document.getElementById('btn-tutorial');
+  let tid=null,svgEl=null,didHold=false;
+  function cleanup(){clearTimeout(tid);tid=null;if(svgEl){svgEl.remove();svgEl=null;}}
+  function doSkip(){
+    const resumeZ=TUT.resumeZ;TUT.resumeZ=null;
+    endTutorial({skipResume:true});
+    if(TUT.scoreSnapshot){Object.assign(SC,TUT.scoreSnapshot);SC.cur={...TUT.scoreSnapshot.cur};TUT.scoreSnapshot=null;}
+    resetToIdle(true);
+    if(resumeZ!=null){unlockElement(resumeZ);setTimeout(()=>selectElement(resumeZ),50);}
+    else requestAnimationFrame(showStripSpotlight);
   }
-  TUT.scoreSnapshot=null;
-  resetToIdle(false);
-  startTutorial();
-},500);
-
-holdActivate(document.getElementById('tut-skip'),()=>{
-  const resumeZ=TUT.resumeZ;TUT.resumeZ=null;
-  endTutorial({skipResume:true});
-  if(TUT.scoreSnapshot){Object.assign(SC,TUT.scoreSnapshot);SC.cur={...TUT.scoreSnapshot.cur};TUT.scoreSnapshot=null;}
-  resetToIdle(true);
-  if(resumeZ!=null){
-    unlockElement(resumeZ);
-    setTimeout(()=>selectElement(resumeZ),50);
-  }else{
-    requestAnimationFrame(showStripSpotlight);
+  function doStart(){
+    const inExercise=S.selectedZ!==null&&S.phase!=='idle'&&S.phase!=='done';
+    if(TUT.active)endTutorial({skipResume:true});
+    TUT.resumeZ=inExercise?S.selectedZ:null;
+    localStorage.removeItem('tut_done');
+    if(!SC.completed){
+      Object.assign(SC,{distOk:0,energeticOk:0,valenceOk:0,shellsOk:0,totalErrors:0,totalHints:0,distErrors:0,epErrors:0,energeticErrors:0,valenceErrors:0,shellsErrors:0,completed:0,cur:{errors:0,hints:0}});
+    }
+    TUT.scoreSnapshot=null;
+    resetToIdle(false);
+    startTutorial();
   }
-},500);
+  btn.addEventListener('click',e=>{e.stopImmediatePropagation();e.preventDefault();},true);
+  btn.addEventListener('pointerdown',e=>{
+    if(tid)return;
+    e.preventDefault();didHold=false;
+    const r=btn.getBoundingClientRect();
+    const sz=r.height,gap=6,cx=sz/2,cy=sz/2,rad=(sz-4)/2,circ=2*Math.PI*rad;
+    svgEl=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svgEl.setAttribute('width',sz);svgEl.setAttribute('height',sz);
+    svgEl.style.cssText=`position:fixed;left:${r.left-sz-gap}px;top:${r.top}px;pointer-events:none;z-index:9999;`;
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r',rad);
+    c.setAttribute('fill','none');c.setAttribute('stroke','#2f97f5');
+    c.setAttribute('stroke-width','3');c.setAttribute('stroke-linecap','round');
+    c.style.cssText=`stroke-dasharray:${circ};stroke-dashoffset:${circ};transform:rotate(-90deg);transform-origin:${cx}px ${cy}px;transition:stroke-dashoffset 1000ms linear;`;
+    svgEl.appendChild(c);document.body.appendChild(svgEl);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{c.style.strokeDashoffset='0';}));
+    tid=setTimeout(()=>{cleanup();didHold=true;vib('tap');if(TUT.active){fastForwardAudio();}else{doSkip();}},1000);
+  });
+  btn.addEventListener('pointerup',()=>{
+    if(tid&&!didHold){
+      cleanup();
+      const audioPlaying=(tutAudio&&!tutAudio.paused&&!tutAudio.ended)||(tutAudio2&&!tutAudio2.paused&&!tutAudio2.ended);
+      if(tutWaitingPlay){
+        tutWaitingPlay=false;
+        document.getElementById('btn-tutorial').classList.remove('wait-play');
+        vib('tap');startTutorial();
+      }else if(tutPendingFn){
+        const fn=tutPendingFn;tutPendingFn=null;vib('tap');fn();
+      }else if(audioPlaying){
+        [tutAudio,tutAudio2].forEach(a=>{if(a&&!a.paused)a.pause();});
+        pausePauseableTimers();
+        syncTutPlayBtn();
+      }else if(TUT.active&&(tutAudio||tutAudio2)){
+        const a=tutAudio||tutAudio2;
+        if(a&&a.paused&&!a.ended){a.play().then(()=>{resumePauseableTimers();syncTutPlayBtn();});}
+        else if(tutCanNext){vib('tap');tutCanNext=false;stopTutAudio();advanceTutorial();}
+      }else if(tutCanNext){
+        vib('tap');tutCanNext=false;stopTutAudio();advanceTutorial();
+      }else{
+        vib('tap');doStart();
+      }
+    }else{cleanup();}
+    didHold=false;
+  });
+  btn.addEventListener('pointercancel',cleanup);
+  btn.addEventListener('pointerleave',cleanup);
+})();
 
 /* ═══════════════════════════════════════════════════
  *  INIT
@@ -2167,8 +2821,15 @@ requestAnimationFrame(()=>{
   if(t)stripEl.scrollLeft=Math.max(0,t.offsetLeft-(stripEl.clientWidth-t.offsetWidth)/2);
 });
 
+const _isLocal=['localhost','127.0.0.1',''].includes(location.hostname)||location.protocol==='file:';
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js');
+  if(_isLocal){
+    // Em desenvolvimento (live preview/localhost) não usa cache: remove SW antigo
+    navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));
+    if(window.caches)caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));
+  }else{
+    navigator.serviceWorker.register('./sw.js');
+  }
 }
 </script>
 </body>
