@@ -2202,21 +2202,17 @@ let STUDENT_NAME='';
 
 function _proceedFromCover(){
   document.getElementById('cover').style.display='none';
-  if(localStorage.getItem('tut_done')){
-    showModeCards();
-  }else{
-    tutWaitingPlay=true;
-    document.getElementById('tut-blocker').style.display='block';
-    document.getElementById('btn-tutorial').classList.add('wait-play');
-    requestAnimationFrame(()=>{
-      const sw=document.querySelector('.strip-wrap');if(!sw)return;
-      const r=sw.getBoundingClientRect();
-      const msg=document.getElementById('strip-msg');
-      msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
-      msg.style.width=r.width+'px';
-      msg.textContent='Clique no play pra começar';msg.style.display='block';
-    });
-  }
+  tutWaitingPlay=true;
+  document.getElementById('tut-blocker').style.display='block';
+  document.getElementById('btn-tutorial').classList.add('wait-play');
+  requestAnimationFrame(()=>{
+    const sw=document.querySelector('.strip-wrap');if(!sw)return;
+    const r=sw.getBoundingClientRect();
+    const msg=document.getElementById('strip-msg');
+    msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
+    msg.style.width=r.width+'px';
+    msg.textContent='Clique no play pra começar';msg.style.display='block';
+  });
 }
 
 function openStudentInfoModal(){
