@@ -438,7 +438,7 @@ body{
   content:'';position:absolute;left:0;top:0;bottom:0;
   background:rgba(255,255,255,.22);border-radius:20px;width:0;transition:none;
 }
-#btn-skip-tutorial.holding::after{width:100%;transition:width 2s linear;}
+#btn-skip-tutorial.holding::after{width:100%;transition:width 1s linear;}
 #tut-fade-dark{
   position:fixed;inset:0;z-index:3502;
   background:rgba(8,22,46,.88);
@@ -659,7 +659,17 @@ body{
   display:flex;flex-direction:column;align-items:center;gap:10px;
 }
 .ep-title{font-size:13px;font-weight:700;color:var(--sky-700);text-align:center;line-height:1.5;}
-.ep-drum-wrap{position:relative;width:67px;height:102px;}
+.ep-num-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:4px 0;}
+.ep-num-btn{
+  width:44px;height:44px;border-radius:10px;border:2px solid var(--sky-300);
+  background:white;font-size:18px;font-weight:800;color:#e03030;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .12s,border-color .12s,transform .1s;font-family:inherit;
+}
+.ep-num-btn:hover{background:var(--sky-50);border-color:var(--sky-500);}
+.ep-num-btn:active{transform:scale(.92);}
+/* mantido para não quebrar referências antigas */
+.ep-drum-wrap{display:none;}
 .ep-drum{
   width:67px;height:102px;overflow-y:scroll;
   border:2px solid var(--sky-300);border-radius:10px;
@@ -726,12 +736,8 @@ body{
 <div id="ep-overlay">
   <div id="ep-box">
     <div class="ep-title">Quantos elétrons no<br><strong id="ep-lv-name"></strong>?</div>
-    <div class="ep-drum-wrap">
-      <div class="ep-drum" id="ep-drum"></div>
-      <div class="ep-pointer"></div>
-    </div>
+    <div class="ep-num-grid" id="ep-num-grid"></div>
     <div class="ep-hint" id="ep-hint"></div>
-    <button id="ep-confirm-btn">Confirmar</button>
   </div>
 </div>
 
@@ -876,7 +882,7 @@ body{
   </div>
 </div>
 <div id="tut-fade-dark"></div>
-<button id="btn-skip-tutorial">segurar pra pular</button>
+<button id="btn-skip-tutorial">Pular tutorial</button>
 <div id="tut-hand">👆</div>
 
 <!-- STUDENT INFO MODAL -->
@@ -1624,7 +1630,14 @@ function submitValence(val){
       }else if(SC.completed>=10){
         setTimeout(showScoreCard,1600);
       }else{
-        setTimeout(()=>{resetToIdle(true);hideStripSpotlight();hideLvBrackets();},1100);
+        setTimeout(()=>{
+          const doneSaved=new Set(S.done); // S.done já tem o elemento atual
+          resetToIdle(true);
+          S.done=doneSaved;
+          doneSaved.forEach(z=>S.unlocked.delete(z)); // tira os feitos dos disponíveis
+          buildStrip(); // reconstrói com os feitos desabilitados
+          hideStripSpotlight();hideLvBrackets();
+        },1100);
       }
     }
   }else{
@@ -1824,11 +1837,6 @@ function openKeypad(ctx,shellN=null){
 function closeKeypad(){
   keypadMask.classList.remove('show');
 }
-document.getElementById('ep-confirm-btn').addEventListener('click',()=>{
-  const drum=document.getElementById('ep-drum');
-  const val=Math.max(1,Math.round(drum.scrollTop/EP_H)+1);
-  confirmEpValue(val);
-});
 keypadMask.addEventListener('click',e=>{if(e.target===keypadMask)closeKeypad();});
 document.getElementById('keypad').addEventListener('click',e=>{
   const k=e.target.dataset.k;if(!k)return;
@@ -1990,18 +1998,19 @@ function showElectronPicker(lastSlot){
   const maxE=SUBLEVEL_MAX[lv]||2;
   document.getElementById('ep-lv-name').textContent=lv;
   document.getElementById('ep-hint').style.display='none';
-  const drum=document.getElementById('ep-drum');
-  drum.innerHTML='';
-  const tp=document.createElement('div');tp.className='ep-pad';drum.appendChild(tp);
+  const grid=document.getElementById('ep-num-grid');
+  grid.innerHTML='';
   for(let i=1;i<=maxE;i++){
-    const it=document.createElement('div');it.className='ep-item';it.textContent=i;
-    it.addEventListener('click',()=>{drum.scrollTop=(i-1)*EP_H;});
-    drum.appendChild(it);
+    const btn=document.createElement('button');
+    btn.className='ep-num-btn';btn.textContent=i;
+    btn.addEventListener('click',()=>confirmEpValue(i));
+    grid.appendChild(btn);
   }
-  const bp=document.createElement('div');bp.className='ep-pad';drum.appendChild(bp);
-  drum.scrollTop=3*EP_H;
+  const cols=Math.min(maxE,4);
+  const boxW=cols*52+16;
+  const boxH=Math.ceil(maxE/cols)*52+80;
   const box=document.getElementById('ep-box');
-  const boxH=200,boxW=192;
+  box.style.width=boxW+'px';
   const pr=document.getElementById('right-panel').getBoundingClientRect();
   const left=Math.max(pr.left+8,Math.min(pr.left+(pr.width-boxW)/2,window.innerWidth-boxW-10));
   const top=Math.max(10,Math.min(pr.top+20,window.innerHeight-boxH-10));
@@ -2024,10 +2033,6 @@ function getEpValue(){
   return Math.max(1,Math.min(maxE,Math.round(drum.scrollTop/EP_H)+1));
 }
 let epLastVal=0;
-document.getElementById('ep-drum').addEventListener('scroll',()=>{
-  document.getElementById('ep-hint').style.display='none';
-  const v=getEpValue();if(v!==epLastVal){epLastVal=v;vib('tap');}
-});
 /* ═══════════════════════════════════════════════════
  *  TOAST + SHAKE
  * ═══════════════════════════════════════════════════ */
@@ -2096,7 +2101,7 @@ let STUDENT_NAME='';
 function _proceedFromCover(){
   document.getElementById('cover').style.display='none';
   if(localStorage.getItem('tut_done')){
-    // já passou pelo tutorial — sem mensagem extra
+    showModeCards();
   }else{
     tutWaitingPlay=true;
     document.getElementById('tut-blocker').style.display='block';
@@ -2157,7 +2162,7 @@ document.getElementById('btn-cover').addEventListener('click',()=>{
         setTimeout(()=>showModeCards(),1000);
       };
       openStudentInfoModal();
-    },2000);
+    },1000);
   });
   btn.addEventListener('pointerup',cancel);
   btn.addEventListener('pointercancel',cancel);
@@ -2191,15 +2196,20 @@ function startModoLivre(){
   for(let z=1;z<=37;z++)unlockElement(z);
   document.getElementById('cover').style.display='none';
   document.getElementById('btn-tutorial').classList.add('btn-hidden');
-  requestAnimationFrame(()=>{
-    const sw=document.querySelector('.strip-wrap');if(!sw)return;
-    const r=sw.getBoundingClientRect();
-    const msg=document.getElementById('strip-msg');
-    msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
-    msg.style.width=r.width+'px';
-    msg.textContent='Escolha qualquer elemento pra praticar';
-    msg.style.display='block';
-  });
+  if(!S.selectedZ){
+    requestAnimationFrame(()=>{
+      const sw=document.querySelector('.strip-wrap');if(!sw)return;
+      const r=sw.getBoundingClientRect();
+      const msg=document.getElementById('strip-msg');
+      msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
+      msg.style.width=r.width+'px';
+      msg.textContent='Escolha qualquer elemento pra praticar';
+      msg.style.opacity='0';
+      msg.style.transition='opacity .4s ease';
+      msg.style.display='block';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>msg.style.opacity='1'));
+    });
+  }
 }
 function startModoDesafio(){
   endTutorial({skipResume:true});
@@ -2226,7 +2236,8 @@ function nextChallengeElement(){
 }
 document.getElementById('btn-modo-livre').addEventListener('click',()=>{
   vib('tap');hideModeCards();
-  playTutAudio('dialogo13.2',()=>startModoLivre());
+  startModoLivre(); // setup imediato: unlocks, remove blocker, mostra barra
+  new Audio('audio/dialogo13.2.mp3?v='+ASSET_VER).play().catch(()=>{});
 });
 document.getElementById('btn-modo-desafio').addEventListener('click',()=>{
   vib('tap');hideModeCards();
@@ -3254,9 +3265,10 @@ requestAnimationFrame(()=>{
 const _isLocal=['localhost','127.0.0.1',''].includes(location.hostname)||location.protocol==='file:';
 if('serviceWorker' in navigator){
   if(_isLocal){
-    // Em desenvolvimento (live preview/localhost) não usa cache: remove SW antigo
+    // Em desenvolvimento: remove SW, cache e reseta tut_done a cada reload
     navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));
     if(window.caches)caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));
+    localStorage.removeItem('tut_done');
   }else{
     navigator.serviceWorker.register('./sw.js');
   }
