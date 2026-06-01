@@ -2364,6 +2364,8 @@ function startTutSection(sec){
     showTutStep(0);
     setTimeout(()=>{
       stopTutAudio();
+      clearPauseableTimers();
+      hideTutImage(true);
       const cfg=TUT_STEPS[0];
       const afterAll=()=>{if(cfg.autoAdvance)advanceTutorial();};
       tutPendingFn=()=>{
