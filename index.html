@@ -425,8 +425,17 @@ body{
   padding:20px;backdrop-filter:blur(5px);
 }
 .info-mask.show{display:flex;}
+#btn-tut-nav{
+  position:fixed;bottom:22px;left:50%;transform:translateX(calc(-50% + 90px));
+  z-index:3750;display:none;overflow:hidden;
+  padding:7px 14px;border:none;border-radius:20px;
+  background:rgba(47,151,245,.25);color:rgba(255,255,255,.85);
+  font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(4px);user-select:none;
+}
+#btn-tut-nav.show{display:block;}
 #btn-skip-tutorial{
-  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  position:fixed;bottom:22px;left:50%;transform:translateX(calc(-50% - 90px));
   z-index:3750;display:none;overflow:hidden;
   padding:7px 20px;border:none;border-radius:20px;
   background:rgba(255,255,255,.14);color:rgba(255,255,255,.65);
@@ -446,6 +455,19 @@ body{
   pointer-events:none;
 }
 #tut-fade-dark.on{opacity:1;}
+.tut-nav-btn{
+  display:flex;align-items:center;gap:12px;width:100%;
+  padding:11px 14px;border:2px solid var(--sky-200);border-radius:14px;
+  background:white;cursor:pointer;text-align:left;font-family:inherit;
+  transition:border-color .15s,box-shadow .15s;
+}
+.tut-nav-btn:hover{border-color:var(--sky-500);box-shadow:0 4px 12px rgba(47,151,245,.18);}
+.tut-nav-num{
+  min-width:28px;height:28px;border-radius:50%;background:var(--sky-500);
+  color:white;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;
+}
+.tut-nav-title{font-size:14px;font-weight:800;color:var(--sky-700);}
+.tut-nav-sub{font-size:11px;color:var(--ink-soft);margin-top:2px;}
 .mode-btn{
   flex:1;padding:18px 10px;border:2px solid var(--sky-200);border-radius:16px;
   background:white;cursor:pointer;text-align:center;font-family:inherit;
@@ -883,6 +905,7 @@ body{
 </div>
 <div id="tut-fade-dark"></div>
 <button id="btn-skip-tutorial">Pular tutorial</button>
+<button id="btn-tut-nav">Navegue pelo tutorial</button>
 <div id="tut-hand">👆</div>
 
 <!-- STUDENT INFO MODAL -->
@@ -892,6 +915,21 @@ body{
     <h2 class="info-title">Olá! Como você se chama?</h2>
     <input type="text" id="inp-name" class="info-inp" placeholder="Seu nome completo..." maxlength="60"/>
     <button class="btn primary info-go" id="btn-enter" disabled>Vamos lá! 🚀</button>
+  </div>
+</div>
+<!-- TUTORIAL NAVIGATION -->
+<div class="info-mask" id="tut-nav-overlay">
+  <div class="info-card" style="max-width:420px;">
+    <div class="info-icon">🗺️</div>
+    <h2 class="info-title">Navegue pelo tutorial</h2>
+    <div id="tut-nav-sections" style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+      <button class="tut-nav-btn" data-sec="1"><span class="tut-nav-num">1</span><div><div class="tut-nav-title">Tutorial completo</div><div class="tut-nav-sub">Assista uma mini-aula pra revisar</div></div></button>
+      <button class="tut-nav-btn" data-sec="2"><span class="tut-nav-num">2</span><div><div class="tut-nav-title">A distribuição eletrônica</div><div class="tut-nav-sub">Vá direto pra distribuição eletrônica</div></div></button>
+      <button class="tut-nav-btn" data-sec="3"><span class="tut-nav-num">3</span><div><div class="tut-nav-title">Subnível mais energético</div><div class="tut-nav-sub">Aprenda a identificar o subnível de maior energia</div></div></button>
+      <button class="tut-nav-btn" data-sec="4"><span class="tut-nav-num">4</span><div><div class="tut-nav-title">Distribuição por níveis</div><div class="tut-nav-sub">Aprenda a organizar elétrons por níveis</div></div></button>
+      <button class="tut-nav-btn" data-sec="5"><span class="tut-nav-num">5</span><div><div class="tut-nav-title">Camada de valência</div><div class="tut-nav-sub">Aprenda a verificar os elétrons de valência</div></div></button>
+      <button class="tut-nav-btn" data-sec="6" style="border-color:#fca5a5;"><span class="tut-nav-num" style="background:#ef4444;">6</span><div><div class="tut-nav-title" style="color:#ef4444;">Pular tutorial</div><div class="tut-nav-sub">Ir direto para a escolha do modo</div></div></button>
+    </div>
   </div>
 </div>
 <!-- MODE SELECTION -->
@@ -2199,6 +2237,9 @@ function openStudentInfoModal(){
   });
 })();
 
+document.getElementById('btn-tut-nav').addEventListener('click',()=>{
+  vib('tap');showTutNavMenu();
+});
 document.getElementById('btn-cover').addEventListener('click',()=>{
   vib('tap');_proceedFromCover();
 });
@@ -2234,6 +2275,129 @@ document.getElementById('btn-cover').addEventListener('click',()=>{
 })();
 
 // ── MODO DE JOGO ──────────────────────────────────────
+// ── NAVEGAÇÃO DO TUTORIAL ────────────────────────────
+function showTutNavMenu(){
+  const el=document.getElementById('tut-nav-overlay');
+  el.style.opacity='0';el.classList.add('show');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    el.style.transition='opacity .35s ease';el.style.opacity='1';
+  }));
+}
+function hideTutNavMenu(){
+  const el=document.getElementById('tut-nav-overlay');
+  el.classList.remove('show');el.style.opacity='';el.style.transition='';
+}
+
+// Configura N (Z=7) com distribuição completa e chips nos slots
+function setupNForSection(phase,fillShells){
+  const z=7,sym=ELEMENTS[7];
+  S.selectedZ=z;S.distribution=getDistribution(z);
+  S.phase=phase;S.correctShells=new Set();
+  TUT.scoreSnapshot={...SC,cur:{...SC.cur}};
+  resetCur();
+  updateStripSel();scrollToCard(z);
+
+  const area=document.getElementById('dist-area');area.className='';
+  area.innerHTML=`<div class="dist-row">
+    <div class="el-label"><span class="n">${z}</span><span class="s">${sym}</span><span class="colon">:</span></div>
+    <div class="slots" id="slots"></div></div>`;
+  const slotsEl=document.getElementById('slots');
+  S.distribution.forEach((d,i)=>{
+    const s=document.createElement('div');s.className='slot filled';
+    s.dataset.idx=i;s.dataset.expected=d.sublevel;s.dataset.expectedE=d.electrons;
+    slotsEl.appendChild(s);
+  });
+  buildPauling(S.distribution);
+  // Coloca chips nos slots
+  S.distribution.forEach((d,i)=>{
+    const chip=paulingEl.querySelector(`.p-cell[data-level="${d.sublevel}"] .chip`);
+    const slot=slotsEl.children[i];
+    if(chip&&slot){
+      chip.dataset.electrons=String(d.electrons);
+      chip.innerHTML=chipHTML(d.sublevel,d.electrons);
+      slot.appendChild(chip);chip.classList.add('in-slot','locked');
+    }
+  });
+  document.querySelectorAll('.p-cell .chip').forEach(c=>c.classList.add('locked'));
+  document.getElementById('question').classList.add('hidden');
+  setSpotlight(true);
+  // Preenche correctShells se necessário (seção 5)
+  if(fillShells){
+    const sm=getShellElectrons(S.distribution);
+    Object.keys(sm).forEach(n=>S.correctShells.add(+n));
+  }
+}
+
+function startTutSection1_skip(){
+  // Vai direto para escolha do modo (mesmo que "Pular tutorial")
+  endTutorial({skipResume:true});
+  TUT.scoreSnapshot=null;
+  resetToIdle(true);
+  _nameSubmitCallback=()=>{
+    playTutAudio('dialogo13.1',null);
+    setTimeout(()=>showModeCards(),1000);
+  };
+  openStudentInfoModal();
+}
+function startTutSection(sec){
+  hideTutNavMenu();
+  hideStripSpotlight();
+  if(sec===6){
+    // Pular tutorial direto para escolha do modo
+    startTutSection1_skip();
+    return;
+  }
+  localStorage.removeItem('tut_done');
+  TUT.active=true;TUT.resumeZ=null;
+  if(!SC.completed){
+    Object.assign(SC,{distOk:0,energeticOk:0,valenceOk:0,shellsOk:0,
+      totalErrors:0,totalHints:0,distErrors:0,epErrors:0,energeticErrors:0,
+      valenceErrors:0,shellsErrors:0,completed:0,
+      distDeduct:0,energeticDeduct:0,shellsDeduct:0,valenceDeduct:0,
+      cur:{errors:0,hints:0,distConsec:0,energeticConsec:0,shellsConsec:0,valenceConsec:0}});
+  }
+  document.getElementById('tut-blocker').style.display='block';
+  document.getElementById('tut-spot').classList.add('on');
+
+  if(sec===1){
+    // Seção 1: começa direto no dialogo1.1 (salta dialogo1.mp3)
+    showTutStep(0);
+    setTimeout(()=>{
+      stopTutAudio();
+      const cfg=TUT_STEPS[0];
+      const afterAll=()=>{if(cfg.autoAdvance)advanceTutorial();};
+      tutPendingFn=()=>{
+        tutCanNext=false;hideTutImage();
+        if(cfg.imageAt.atomOn)startAtomAnimation();
+        playTutAudio(cfg.imageAt.thenAudio,()=>{
+          if(cfg.imageAt.afterChain){tutPendingFn=()=>startDialogo12Chain(afterAll);syncTutPlayBtn();}
+          else{tutCanNext=true;afterAll();}
+        });
+      };
+      syncTutPlayBtn();
+    },60);
+  }else if(sec===2){
+    showTutStep(1);
+  }else if(sec===3){
+    setupNForSection('energetic',false);
+    setTimeout(()=>{
+      S.phase='energetic';
+      showTutStep(8);
+    },150);
+  }else if(sec===4){
+    setupNForSection('shells',false);
+    setTimeout(()=>showTutStep(9),150);
+  }else if(sec===5){
+    setupNForSection('shells',true);
+    setTimeout(()=>showTutStep(10),150);
+  }
+}
+
+document.getElementById('tut-nav-sections').addEventListener('click',e=>{
+  const btn=e.target.closest('.tut-nav-btn');
+  if(!btn)return;
+  vib('tap');startTutSection(+btn.dataset.sec);
+});
 function showModeCards(){
   const el=document.getElementById('mode-overlay');
   el.style.opacity='0';el.classList.add('show');
@@ -2929,6 +3093,7 @@ function startTutorial(){
   if(localStorage.getItem('tut_done'))return;
   TUT.active=true;
   document.getElementById('btn-skip-tutorial').classList.add('show');
+  document.getElementById('btn-tut-nav').classList.add('show');
   document.getElementById('tut-blocker').style.display='block';
   document.getElementById('tut-spot').classList.add('on');
   showTutStep(0);
@@ -3082,6 +3247,7 @@ function goBackTutorial(){
 function endTutorial(opts){
   opts=opts||{};
   document.getElementById('btn-skip-tutorial').classList.remove('show');
+  document.getElementById('btn-tut-nav').classList.remove('show');
   stopArrowAnimation();
   stopHandAnimation();
   stopTutAudio();
@@ -3293,7 +3459,7 @@ function holdActivate(el,onActivate,ms=1000){
       if(tutWaitingPlay){
         tutWaitingPlay=false;
         document.getElementById('btn-tutorial').classList.remove('wait-play');
-        vib('tap');startTutorial();
+        vib('tap');showTutNavMenu();
       }else if(tutPendingFn){
         const fn=tutPendingFn;tutPendingFn=null;vib('tap');fn();
       }else if(audioPlaying){
