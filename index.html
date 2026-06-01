@@ -997,10 +997,21 @@ const SC={
   totalErrors:0,totalHints:0,
   distErrors:0,epErrors:0,energeticErrors:0,valenceErrors:0,shellsErrors:0,
   completed:0,
-  cur:{errors:0,hints:0},
+  distDeduct:0,energeticDeduct:0,shellsDeduct:0,valenceDeduct:0,
+  cur:{errors:0,hints:0,distConsec:0,energeticConsec:0,shellsConsec:0,valenceConsec:0},
 };
-const MAX_SCORE=320;
-function resetCur(){SC.cur={errors:0,hints:0};}
+const CAT_MAX={dist:3.0,energetic:2.5,shells:2.5,valence:2.0};
+const CAT_BASE={dist:0.15,energetic:0.12,shells:0.12,valence:0.10};
+function resetCur(){SC.cur={errors:0,hints:0,distConsec:0,energeticConsec:0,shellsConsec:0,valenceConsec:0};}
+function applyErrorPenalty(cat){
+  const penalty=CAT_BASE[cat]*Math.pow(2,SC.cur[cat+'Consec']);
+  SC[cat+'Deduct']=Math.min(CAT_MAX[cat],SC[cat+'Deduct']+penalty);
+  SC.cur[cat+'Consec']++;
+}
+function calcScore(){
+  const catScore=Object.keys(CAT_MAX).reduce((s,k)=>s+Math.max(0,CAT_MAX[k]-SC[k+'Deduct']),0);
+  return Math.max(0,+(catScore-SC.totalHints*0.1).toFixed(1));
+}
 
 /* ═══════════════════════════════════════════════════
  *  ELEMENT STRIP
@@ -1110,6 +1121,7 @@ function buildExercise(){
   buildPauling(dist);
   const q=document.getElementById('question');q.classList.add('hidden');q.innerHTML='';
   hideHintBtn();
+  if(!TUT.active)startIdleHint();
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1184,6 +1196,19 @@ function ns(tag){return document.createElementNS('http://www.w3.org/2000/svg',ta
  *  DRAG & DROP
  * ═══════════════════════════════════════════════════ */
 let dragData=null,dragGhost=null;
+let _idleHintTimer=null;
+function startIdleHint(){
+  clearTimeout(_idleHintTimer);
+  _idleHintTimer=setTimeout(()=>{
+    if(TUT.active||S.phase!=='distribution')return;
+    if(document.querySelectorAll('#slots .slot.filled').length>0)return;
+    startHandAnim('.p-cell[data-level="1s"] .chip','#slots .slot[data-idx="0"]');
+  },10000);
+}
+function stopIdleHint(){
+  clearTimeout(_idleHintTimer);_idleHintTimer=null;
+  if(!TUT.active)stopHandAnimation();
+}
 function onChipDown(e){
   if(S.phase!=='distribution')return;
   const chip=e.currentTarget;if(chip.classList.contains('locked'))return;
@@ -1193,6 +1218,7 @@ function onChipDown(e){
   if(TUT.active&&(TUT.step===5||TUT.step===6)){
     stopHandAnimation();
   }
+  if(!TUT.active)stopIdleHint();
   hideElectronPicker();
   e.preventDefault();e.stopPropagation();
   const rect=chip.getBoundingClientRect();
@@ -1411,7 +1437,7 @@ function checkDistribution(){
       setTimeout(askMostEnergetic,1500);
     }
   }else{
-    SC.totalErrors++;SC.cur.errors++;SC.distErrors++;
+    SC.totalErrors++;SC.cur.errors++;SC.distErrors++;applyErrorPenalty('dist');
     slots.forEach(s=>s.classList.add('wrong'));
     vib('error');playNo();showToast('Tente de novo',true);
     showHintBtn();
@@ -1477,7 +1503,7 @@ function onPickEnergetic(e){
     if(tutQ1){setTimeout(()=>{if(TUT.step<9)showTutStep(9);},1500);}
     else{setTimeout(askShells,1500);}
   }else{
-    SC.totalErrors++;SC.cur.errors++;SC.energeticErrors++;
+    SC.totalErrors++;SC.cur.errors++;SC.energeticErrors++;applyErrorPenalty('energetic');
     playNo();
     showHintBtn();
     setTimeout(()=>slot.classList.remove('wrong'),800);
@@ -1580,7 +1606,7 @@ function submitValence(val){
         });
       },900);
     }else{
-      SC.totalErrors++;SC.cur.errors++;SC.valenceErrors++;
+      SC.totalErrors++;SC.cur.errors++;SC.valenceErrors++;applyErrorPenalty('valence');
       vib('error');playNo();vSlot.classList.add('wrong');showToast('Tente de novo',true);
       setTimeout(()=>{vSlot.classList.remove('wrong');vSlot.classList.add('empty');vSlot.textContent='?';},1200);
       // dica de erro + pulso no último slot
@@ -1631,17 +1657,29 @@ function submitValence(val){
         setTimeout(showScoreCard,1600);
       }else{
         setTimeout(()=>{
-          const doneSaved=new Set(S.done); // S.done já tem o elemento atual
+          const doneSaved=new Set(S.done);
           resetToIdle(true);
           S.done=doneSaved;
-          doneSaved.forEach(z=>S.unlocked.delete(z)); // tira os feitos dos disponíveis
-          buildStrip(); // reconstrói com os feitos desabilitados
-          hideStripSpotlight();hideLvBrackets();
+          doneSaved.forEach(z=>S.unlocked.delete(z));
+          buildStrip();
+          hideLvBrackets();
+          // barra "escolha outro elemento"
+          requestAnimationFrame(()=>{
+            const sw=document.querySelector('.strip-wrap');if(!sw)return;
+            const r=sw.getBoundingClientRect();
+            const msg=document.getElementById('strip-msg');
+            msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
+            msg.style.width=r.width+'px';
+            msg.textContent='Escolha outro elemento';
+            msg.style.opacity='0';msg.style.transition='opacity .4s ease';
+            msg.style.display='block';
+            requestAnimationFrame(()=>requestAnimationFrame(()=>msg.style.opacity='1'));
+          });
         },1100);
       }
     }
   }else{
-    SC.totalErrors++;SC.cur.errors++;SC.valenceErrors++;
+    SC.totalErrors++;SC.cur.errors++;SC.valenceErrors++;applyErrorPenalty('valence');
     vib('error');playNo();vSlot.classList.add('wrong');showToast('Tente de novo',true);
     showHintBtn();
     setTimeout(()=>{vSlot.classList.remove('wrong');vSlot.classList.add('empty');vSlot.textContent='?';},1200);
@@ -1788,7 +1826,7 @@ function submitShell(n,val){
         setTimeout(()=>advanceTutorial(),1500);
       }
     }else{
-      SC.totalErrors++;SC.cur.errors++;SC.shellsErrors++;
+      SC.totalErrors++;SC.cur.errors++;SC.shellsErrors++;applyErrorPenalty('shells');
       vib('error');playNo();slot.classList.add('wrong');showToast('Tente de novo',true);
       setTimeout(()=>{slot.classList.remove('wrong');slot.classList.add('empty');slot.textContent='?';},1200);
       if(n===2){setChipRedHighlight(1);setChipRedHighlight(2);}
@@ -1798,6 +1836,7 @@ function submitShell(n,val){
   }
   if(val===(shellMap[n]||0)){
     slot.classList.add('correct');S.correctShells.add(n);
+    SC.cur.shellsConsec=0; // reset consecutive para próxima pergunta de nível
     if(TUT.active&&shellBlinkPending){
       shellBlinkPending.delete(n);
       document.querySelectorAll('#slots .slot .chip').forEach(c=>{if(+c.dataset.level[0]===n){c.style.boxShadow='';c.style.outline='';}});
@@ -1813,7 +1852,7 @@ function submitShell(n,val){
       setTimeout(askValence,1400);
     }
   }else{
-    SC.totalErrors++;SC.cur.errors++;SC.shellsErrors++;
+    SC.totalErrors++;SC.cur.errors++;SC.shellsErrors++;applyErrorPenalty('shells');
     vib('error');playNo();slot.classList.add('wrong');showToast('Tente de novo',true);
     showHintBtn();
     if(TUT.active){setTimeout(()=>{document.getElementById('tut-balloon').style.opacity='1';},400);}
@@ -1904,49 +1943,63 @@ document.getElementById('btn-hint').addEventListener('click',()=>{
  *  SCORE CARD (after 10 exercises)
  * ═══════════════════════════════════════════════════ */
 function showScoreCard(){
-  const earned=SC.distOk*10+SC.energeticOk*5+SC.valenceOk*7+SC.shellsOk*10;
-  const deductions=SC.totalErrors*2+SC.totalHints;
-  const raw=Math.max(0,earned-deductions);
-  const score10=Math.min(10,+(raw/MAX_SCORE*10).toFixed(1));
+  hideLvBrackets();
+  clearSlotOutlines();
+  clearChipHighlights();
+  const score10=calcScore();
 
   document.getElementById('sc-student-bar').textContent=STUDENT_NAME;
   document.getElementById('sc-pts').textContent=score10.toFixed(1).replace('.',',');
   document.getElementById('sc-pct').textContent='de 10 pontos';
 
+  // ── breakdown por categoria ──────────────────────────
+  const cats=[
+    {label:'📦 Distribuição eletrônica', ok:SC.distOk,  err:SC.distErrors+SC.epErrors, deduct:SC.distDeduct,     max:CAT_MAX.dist},
+    {label:'⚡ Subnível mais energético',ok:SC.energeticOk,err:SC.energeticErrors, deduct:SC.energeticDeduct, max:CAT_MAX.energetic},
+    {label:'📊 Distribuição por níveis', ok:SC.shellsOk,  err:SC.shellsErrors, deduct:SC.shellsDeduct,         max:CAT_MAX.shells},
+    {label:'🔬 Camada de valência',      ok:SC.valenceOk, err:SC.valenceErrors, deduct:SC.valenceDeduct,       max:CAT_MAX.valence},
+  ];
   const br=document.getElementById('sc-breakdown');
-  br.innerHTML=`
-    <div class="sc-row"><span>✅ Distribuições corretas (${SC.distOk}×10)</span><span>+${SC.distOk*10}</span></div>
-    <div class="sc-row"><span>✅ Subníveis mais energéticos (${SC.energeticOk}×5)</span><span>+${SC.energeticOk*5}</span></div>
-    <div class="sc-row"><span>✅ Valências corretas (${SC.valenceOk}×7)</span><span>+${SC.valenceOk*7}</span></div>
-    <div class="sc-row"><span>✅ Distribuições em níveis (${SC.shellsOk}×10)</span><span>+${SC.shellsOk*10}</span></div>
-    ${(()=>{
-      const rows=[];
-      const distTotal=SC.distErrors+SC.epErrors;
-      if(distTotal>0){
-        rows.push(`<div class="sc-row neg"><span>❌ Erros na distribuição (${distTotal}×2)</span><span>−${distTotal*2}</span></div>`);
-        if(SC.distErrors>0)rows.push(`<div class="sc-row sub"><span>↳ Encaixe errado: ${SC.distErrors}</span></div>`);
-        if(SC.epErrors>0)rows.push(`<div class="sc-row sub"><span>↳ Nº de elétrons: ${SC.epErrors}</span></div>`);
-      }
-      if(SC.energeticErrors>0)rows.push(`<div class="sc-row neg"><span>❌ Erros no subnível energético (${SC.energeticErrors}×2)</span><span>−${SC.energeticErrors*2}</span></div>`);
-      if(SC.valenceErrors>0)rows.push(`<div class="sc-row neg"><span>❌ Erros na valência (${SC.valenceErrors}×2)</span><span>−${SC.valenceErrors*2}</span></div>`);
-      if(SC.shellsErrors>0)rows.push(`<div class="sc-row neg"><span>❌ Erros em distribuição por níveis (${SC.shellsErrors}×2)</span><span>−${SC.shellsErrors*2}</span></div>`);
-      if(!rows.length)rows.push(`<div class="sc-row neg"><span>❌ Erros (0×2)</span><span>−0</span></div>`);
-      return rows.join('');
-    })()}
-    <div class="sc-row neg"><span>💡 Dicas usadas (${SC.totalHints}×1)</span><span>−${SC.totalHints}</span></div>
-    <div class="sc-row sep"><span>Nota final</span><span>${score10.toFixed(1).replace('.',',')} / 10</span></div>
-  `;
+  br.innerHTML=cats.map(c=>{
+    const catScore=Math.max(0,c.max-c.deduct).toFixed(2);
+    const status=c.err===0?'✅':'⚠️';
+    return `<div class="sc-row">
+      <span>${status} ${c.label}</span>
+      <span style="text-align:right">
+        <span style="color:#22c55e;font-size:11px">✔ ${c.ok}</span>
+        ${c.err>0?`<span style="color:#ef4444;font-size:11px;margin-left:6px">✘ ${c.err}</span>`:''}
+        <span style="margin-left:8px;font-weight:900">${catScore}</span>
+      </span>
+    </div>`;
+  }).join('')
+  +(SC.totalHints>0?`<div class="sc-row neg"><span>💡 Dicas usadas (${SC.totalHints}×0,1)</span><span>−${(SC.totalHints*0.1).toFixed(1)}</span></div>`:'')
+  +`<div class="sc-row sep"><span>Nota final</span><span>${score10.toFixed(1).replace('.',',')} / 10</span></div>`;
 
+  // ── recomendação baseada na categoria de maior erro ──
+  const maxErrCat=cats.reduce((best,c)=>c.err>best.err?c:best,cats[0]);
+  const totalErr=cats.reduce((s,c)=>s+c.err,0);
   const msgEl=document.getElementById('sc-msg');
-  if(score10>=8){
+  const recMap={
+    '📦 Distribuição eletrônica':{tip:'Revise a ordem de Pauling e os encaixes dos subníveis no tutorial.',emoji:'📦'},
+    '⚡ Subnível mais energético':{tip:'Revise a hierarquia de energia dos subníveis — o tutorial explica passo a passo.',emoji:'⚡'},
+    '📊 Distribuição por níveis':{tip:'Pratique agrupar subníveis por camada (K, L, M...) — coberto na questão 2 do tutorial.',emoji:'📊'},
+    '🔬 Camada de valência':{tip:'A última camada é sempre a camada de valência — revise no tutorial questão 3.',emoji:'🔬'},
+  };
+  if(score10>=9&&totalErr===0){
     msgEl.className='score-msg great';
-    msgEl.textContent='🌟 Incrível! Você dominou a distribuição eletrônica! Seu desempenho foi excepcional — continue assim!';
+    msgEl.textContent='🌟 Perfeito! Sem nenhum erro — você dominou a distribuição eletrônica!';
+  }else if(score10>=7){
+    msgEl.className='score-msg great';
+    const r=recMap[maxErrCat.label];
+    msgEl.innerHTML=`🎉 Muito bem! ${totalErr>0?`Ponto a melhorar: <strong>${maxErrCat.label.replace(/^[^ ]+ /,'')}</strong>. ${r?r.tip:''}`:'Desempenho excelente!'}`;
   }else if(score10>=5){
     msgEl.className='score-msg mid';
-    msgEl.textContent='📚 Você está na média! Está no caminho certo, mas continue praticando para solidificar o conhecimento.';
+    const r=recMap[maxErrCat.label];
+    msgEl.innerHTML=`📚 Bom esforço! Ponto fraco: <strong>${maxErrCat.label.replace(/^[^ ]+ /,'')}</strong>. ${r?r.tip:'Continue praticando!'}`;
   }else{
     msgEl.className='score-msg low';
-    msgEl.textContent='💪 Não desanime! Revise a ordem de Pauling e dedique-se um pouco mais — você vai conseguir!';
+    const r=recMap[maxErrCat.label];
+    msgEl.innerHTML=`💪 Não desanime! Foque em: <strong>${maxErrCat.label.replace(/^[^ ]+ /,'')}</strong>. ${r?r.tip:'Revise o tutorial para reforçar os conceitos.'}`;
   }
 
   setSpotlight(false);
@@ -2003,7 +2056,17 @@ function showElectronPicker(lastSlot){
   for(let i=1;i<=maxE;i++){
     const btn=document.createElement('button');
     btn.className='ep-num-btn';btn.textContent=i;
-    btn.addEventListener('click',()=>confirmEpValue(i));
+    btn.addEventListener('click',()=>{
+      if(grid.dataset.picked)return;
+      grid.dataset.picked='1';
+      vib('snap');
+      btn.style.background='#21c87a';
+      btn.style.color='white';
+      btn.style.borderColor='#21c87a';
+      btn.style.transform='scale(1.18)';
+      btn.style.transition='transform .15s ease';
+      setTimeout(()=>confirmEpValue(i),380);
+    });
     grid.appendChild(btn);
   }
   const cols=Math.min(maxE,4);
@@ -2025,6 +2088,7 @@ function showElectronPicker(lastSlot){
 }
 function hideElectronPicker(){
   document.getElementById('ep-overlay').classList.remove('show');
+  document.getElementById('ep-num-grid').dataset.picked='';
   epLastSlot=null;
 }
 function getEpValue(){
@@ -2329,7 +2393,7 @@ function askValenceTUT(){
       },900);
     }else{
       vib('error');playNo();showToast('Tente de novo',true);
-      SC.totalErrors++;SC.cur.errors++;SC.valenceErrors++;
+      SC.totalErrors++;SC.cur.errors++;SC.valenceErrors++;applyErrorPenalty('valence');
       const el=document.getElementById('sv-'+n);
       if(el){el.classList.add('wrong');setTimeout(()=>el.classList.remove('wrong'),800);}
     }
