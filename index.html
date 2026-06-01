@@ -167,7 +167,7 @@ body{
                text-align:center;line-height:1.2;overflow:hidden;}
 
 /* ── EXERCISE COUNTER BAR ── */
-.ex-counter-bar{text-align:right;font-size:12px;font-weight:800;color:var(--sky-600);margin-top:4px;letter-spacing:.3px;}
+.ex-counter-bar{text-align:right;font-size:12px;font-weight:800;color:var(--sky-600);margin-bottom:6px;letter-spacing:.3px;}
 
 /* ── ACTIONS ── */
 .actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;}
@@ -1090,11 +1090,11 @@ function buildExercise(){
   const dist=S.distribution,z=S.selectedZ,sym=ELEMENTS[z];
   const area=document.getElementById('dist-area');
   area.className='';
-  area.innerHTML=`<div class="dist-row">
+  const counterHtml=TUT.active?'':'<div class="ex-counter-bar">Exercício '+(SC.completed+1)+'/10</div>';
+  area.innerHTML=counterHtml+`<div class="dist-row">
     <div class="el-label"><span class="n">${z}</span><span class="s">${sym}</span><span class="colon">:</span></div>
     <div class="slots" id="slots"></div>
-  </div>
-  ${TUT.active?'':` <div class="ex-counter-bar">Exercício ${SC.completed+1} de 10</div>`}`;
+  </div>`;
   const slotsEl=document.getElementById('slots');
   dist.forEach((d,i)=>{
     const s=document.createElement('div');s.className='slot';
@@ -1303,7 +1303,7 @@ function setSpotlight(on){
   const lp=document.getElementById('left-panel');
   if(on){
     const r=lp.getBoundingClientRect();
-    const h=r.height*1.80;
+    const h=r.height*1.80+28;
     hole.style.left=r.left+'px';
     hole.style.top=r.top+'px';
     hole.style.width=r.width+'px';
@@ -1351,7 +1351,10 @@ function showStripSpotlight(label){
 }
 function hideStripSpotlight(){
   document.getElementById('spotlight-hole').classList.remove('on');
-  document.getElementById('strip-msg').style.display='none';
+  const msg=document.getElementById('strip-msg');
+  msg.style.transition='opacity .4s ease';
+  msg.style.opacity='0';
+  setTimeout(()=>{msg.style.display='none';msg.style.opacity='';msg.style.transition='';},420);
 }
 function showTutEndMsg(){
   const sw=document.querySelector('.strip-wrap');if(!sw)return;
