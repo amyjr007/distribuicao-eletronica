@@ -58,6 +58,7 @@ body{
 .el-card.enabled{cursor:pointer;}
 .el-card.enabled:hover{transform:translateY(-2px);border-color:var(--sky-400);}
 .el-card.disabled{opacity:.30;filter:grayscale(.5);cursor:not-allowed;}
+.el-card.faded{opacity:.10;pointer-events:none;}
 .el-card.disabled .lock{position:absolute;top:3px;right:4px;font-size:10px;}
 .el-card.selected{border-color:var(--sky-500);
   box-shadow:0 0 0 4px rgba(47,151,245,.25),0 8px 18px rgba(31,124,214,.25);
@@ -152,8 +153,11 @@ body{
   border:2px solid var(--sky-400);background:white;
   display:flex;align-items:center;justify-content:center;
   font-size:20px;font-weight:800;cursor:pointer;
+  transform-origin:center center;
   transition:transform .12s,box-shadow .12s;
 }
+@keyframes shellValPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.3);}}
+.shell-val-pulsing{animation:shellValPulse 0.85s ease-in-out infinite;}
 .shell-val.empty  {color:var(--ink-soft);}
 .shell-val.correct{border-color:var(--good);background:#eafff5;box-shadow:0 0 0 3px rgba(33,200,122,.22);cursor:default;}
 .shell-val.wrong  {border-color:var(--bad);background:#fff0f0;box-shadow:0 0 0 3px rgba(255,106,106,.22);}
@@ -419,6 +423,36 @@ body{
   padding:20px;backdrop-filter:blur(5px);
 }
 .info-mask.show{display:flex;}
+#btn-skip-tutorial{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  z-index:3750;display:none;overflow:hidden;
+  padding:7px 20px;border:none;border-radius:20px;
+  background:rgba(255,255,255,.14);color:rgba(255,255,255,.65);
+  font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+  backdrop-filter:blur(4px);user-select:none;
+}
+#btn-skip-tutorial.show{display:block;}
+#btn-skip-tutorial::after{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  background:rgba(255,255,255,.22);border-radius:20px;width:0;transition:none;
+}
+#btn-skip-tutorial.holding::after{width:100%;transition:width 2s linear;}
+#tut-fade-dark{
+  position:fixed;inset:0;z-index:3502;
+  background:rgba(8,22,46,.88);
+  opacity:0;transition:opacity .5s ease;
+  pointer-events:none;
+}
+#tut-fade-dark.on{opacity:1;}
+.mode-btn{
+  flex:1;padding:18px 10px;border:2px solid var(--sky-200);border-radius:16px;
+  background:white;cursor:pointer;text-align:center;font-family:inherit;
+  transition:border-color .15s,box-shadow .15s;
+}
+.mode-btn:hover{border-color:var(--sky-500);box-shadow:0 4px 14px rgba(47,151,245,.25);}
+.mode-btn-icon{font-size:32px;margin-bottom:6px;}
+.mode-btn-title{font-size:15px;font-weight:800;color:var(--sky-700);}
+.mode-btn-desc{font-size:11px;color:#888;margin-top:4px;line-height:1.3;}
 .info-card{
   background:white;border-radius:22px;padding:30px 28px;
   max-width:380px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.50);
@@ -807,13 +841,13 @@ body{
       <text id="atom-label-5" class="atom-label" x="108" y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">P</text>
       <text id="atom-label-6" class="atom-label" x="122" y="-4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="700" font-family="inherit">Q</text>
       <!-- level number labels at top of each orbit -->
-      <text id="atom-lv-0" class="atom-label" x="0" y="-27"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">1o nível</text>
-      <text id="atom-lv-1" class="atom-label" x="0" y="-45"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">2o nível</text>
-      <text id="atom-lv-2" class="atom-label" x="0" y="-63"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">3o nível</text>
-      <text id="atom-lv-3" class="atom-label" x="0" y="-81"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">4o nível</text>
-      <text id="atom-lv-4" class="atom-label" x="0" y="-97"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">5o nível</text>
-      <text id="atom-lv-5" class="atom-label" x="0" y="-113" text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">6o nível</text>
-      <text id="atom-lv-6" class="atom-label" x="0" y="-127" text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">7o nível</text>
+      <text id="atom-lv-0" class="atom-label" x="0" y="-27"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">1º nível</text>
+      <text id="atom-lv-1" class="atom-label" x="0" y="-45"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">2º nível</text>
+      <text id="atom-lv-2" class="atom-label" x="0" y="-63"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">3º nível</text>
+      <text id="atom-lv-3" class="atom-label" x="0" y="-81"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">4º nível</text>
+      <text id="atom-lv-4" class="atom-label" x="0" y="-97"  text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">5º nível</text>
+      <text id="atom-lv-5" class="atom-label" x="0" y="-113" text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">6º nível</text>
+      <text id="atom-lv-6" class="atom-label" x="0" y="-127" text-anchor="middle" fill="#ffffff" font-size="8" font-family="inherit">7º nível</text>
       <text id="atom-niv-txt" class="atom-label" x="0" y="143" text-anchor="middle" fill="#ffffff" font-size="13.5" font-family="inherit">7 níveis</text>
     </svg>
   </div>
@@ -839,6 +873,8 @@ body{
     </div>
   </div>
 </div>
+<div id="tut-fade-dark"></div>
+<button id="btn-skip-tutorial">segurar pra pular</button>
 <div id="tut-hand">👆</div>
 
 <!-- STUDENT INFO MODAL -->
@@ -848,6 +884,25 @@ body{
     <h2 class="info-title">Olá! Como você se chama?</h2>
     <input type="text" id="inp-name" class="info-inp" placeholder="Seu nome completo..." maxlength="60"/>
     <button class="btn primary info-go" id="btn-enter" disabled>Vamos lá! 🚀</button>
+  </div>
+</div>
+<!-- MODE SELECTION -->
+<div class="info-mask" id="mode-overlay">
+  <div class="info-card">
+    <div class="info-icon">🎯</div>
+    <h2 class="info-title">Como quer praticar?</h2>
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button class="mode-btn" id="btn-modo-livre">
+        <div class="mode-btn-icon">🎓</div>
+        <div class="mode-btn-title">Modo Livre</div>
+        <div class="mode-btn-desc">Escolha qualquer elemento</div>
+      </button>
+      <button class="mode-btn" id="btn-modo-desafio">
+        <div class="mode-btn-icon">🏆</div>
+        <div class="mode-btn-title">Modo Desafio</div>
+        <div class="mode-btn-desc">10 elementos em sequência</div>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1016,6 +1071,7 @@ function selectElement(z){
   lp.classList.add('panel-exit');
   setTimeout(()=>{
     lp.classList.remove('panel-exit');
+    if(!TUT.active)hideLvBrackets();
     S.selectedZ=z;S.distribution=getDistribution(z);S.phase='distribution';
     S.correctShells=new Set();resetCur();
     updateStripSel();scrollToCard(z);buildExercise();
@@ -1181,7 +1237,12 @@ window.addEventListener('pointerup',e=>{
       if(home)home.appendChild(existing);existing.classList.remove('in-slot');targetSlot.classList.remove('filled');
     }
     targetSlot.appendChild(chip);targetSlot.classList.add('filled');chip.classList.add('in-slot');
-    vib('snap');playEncaixe();
+    vib('snap');playCerto();
+    if(desafioMsgActive){
+      desafioMsgActive=false;
+      document.querySelectorAll('.el-card.faded').forEach(c=>c.classList.remove('faded'));
+      hideStripSpotlight();
+    }
   }else{
     const home=paulingEl.querySelector(`.p-cell[data-level="${chip.dataset.level}"]`);
     if(home)home.appendChild(chip);chip.classList.remove('in-slot');
@@ -1256,6 +1317,7 @@ function setSpotlight(on){
 let hintCleanup=null,hintCounted=false;
 
 function showHintBtn(){
+  if(TUT.active)return;
   hintCounted=false;
   const w=document.getElementById('hint-widget');
   const area=document.getElementById('dist-area');
@@ -1282,7 +1344,7 @@ function showStripSpotlight(label){
   const msg=document.getElementById('strip-msg');
   msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
   msg.style.width=r.width+'px';
-  msg.textContent=(typeof label==='string'?label:(SC.completed===0?'Escolha um elemento':'Selecione o próximo elemento'));
+  msg.textContent=(typeof label==='string'?label:'Clique no play pra começar');
   msg.style.display='block';
 }
 function hideStripSpotlight(){
@@ -1381,7 +1443,8 @@ function askMostEnergetic(){
 }
 function onPickEnergetic(e){
   if(S.phase!=='energetic')return;
-  clearEvidenceChips();
+  const tutQ1=TUT.active&&TUT.step===8;
+  if(!tutQ1)clearEvidenceChips(); // no TUT Q1: mantém destaque no erro
   const slot=e.currentTarget;
   const slots=[...document.querySelectorAll('#slots .slot')];
   slots.forEach(s=>s.classList.remove('correct','wrong'));
@@ -1389,23 +1452,36 @@ function onPickEnergetic(e){
   slot.classList.add(ok?'correct':'wrong');
   vib(ok?'success':'error');showToast(ok?'Parabéns!':'Tente de novo',!ok);
   if(ok){
+    if(tutQ1)clearEvidenceChips(); // limpa só no acerto
     SC.energeticOk++;fireConfetti();playYesAndApplause();
     stopDragHandAnim();
     setTimeout(()=>slot.classList.remove('correct'),1200);
     slots.forEach(s=>{s.classList.remove('energetic-target');s.removeEventListener('click',onPickEnergetic);});
     hideHintBtn();
-    if(TUT.active&&TUT.step===8){
+    if(tutQ1){
       const b=document.getElementById('tut-balloon');
       b.style.opacity='0';setTimeout(()=>{b.className='tut-balloon';b.style.opacity='';},300);
       playTutAudio('dialogo10.5',null);
     }
-    setTimeout(askShells,1500);
+    if(tutQ1){setTimeout(()=>{if(TUT.step<9)showTutStep(9);},1500);}
+    else{setTimeout(askShells,1500);}
   }else{
     SC.totalErrors++;SC.cur.errors++;SC.energeticErrors++;
     playNo();
     showHintBtn();
     setTimeout(()=>slot.classList.remove('wrong'),800);
-    if(TUT.active&&TUT.step===8){
+    if(tutQ1){
+      // mãozinha apontando pro 2p (último slot = correto)
+      const corr=slots[slots.length-1];
+      if(corr){
+        if(tutHandExtra){tutHandExtra.remove();tutHandExtra=null;}
+        const r=corr.getBoundingClientRect();
+        tutHandExtra=document.createElement('div');
+        tutHandExtra.style.cssText=`position:fixed;z-index:3800;pointer-events:none;font-size:26px;line-height:1;`
+          +`left:${r.left+r.width/2-13}px;top:${r.top-32}px;animation:handBob 1s ease-in-out infinite;`;
+        tutHandExtra.textContent='👇';
+        document.body.appendChild(tutHandExtra);
+      }
       setTimeout(()=>playTutAudio('dialogo10.1',null),600);
     }
   }
@@ -1419,23 +1495,98 @@ function askValence(){
   const slots=[...document.querySelectorAll('#slots .slot')];
   slots.forEach(s=>{s.classList.remove('correct','energetic-target');s.removeEventListener('click',onPickEnergetic);});
   const qv=document.getElementById('question');
-  qv.innerHTML=`
-    <div class="q-row">
-      <span><strong>3.</strong> Quantos elétrons tem a camada de valência?</span>
-      <span class="valence-slot empty" id="valence-slot">?</span>
-    </div>`;
-  qv.classList.remove('drama-in');void qv.offsetWidth;qv.classList.add('drama-in');
+  if(!TUT.active&&S.distribution&&S.distribution.length){
+    // exercício normal: mantém distribuição por níveis com cores, igual ao tutorial
+    const shellMap=getShellElectrons(S.distribution);
+    const maxN=shellMap?Math.max(...Object.keys(shellMap).map(Number)):0;
+    let rows='';
+    for(let n=1;n<=maxN;n++){
+      const color=LV_BRACKET_COLORS[n]||'#888';
+      const correct=S.correctShells&&S.correctShells.has(n);
+      rows+=`<div class="shell-item"><span class="shell-name">${SHELL_NAME[n]}</span>`
+        +`<span class="shell-val correct" data-n="${n}" id="sv-${n}" style="border-color:${color};box-shadow:0 0 0 3px ${color}55;">${correct?shellMap[n]:'?'}</span>`
+        +`<span class="shell-ordinal" style="color:${color};font-weight:700;">${n}º nível</span></div>`;
+    }
+    // colore chips por nível
+    slots.forEach((s,i)=>{
+      const n=+S.distribution[i].sublevel[0];
+      const color=LV_BRACKET_COLORS[n]||'#888';
+      const ch=s.querySelector('.chip');
+      if(ch){ch.style.outline=`2px solid ${color}`;ch.style.boxShadow=`0 0 0 3px ${color}66`;}
+    });
+    // atualiza brackets com cores de nível
+    showDistributionBrackets();
+    qv.innerHTML=`<div class="q-row">`
+      +`<span><strong>3.</strong> Quantos elétrons tem a camada de valência?</span>`
+      +`<span class="valence-slot empty" id="valence-slot">?</span></div>`
+      +`<div style="margin-top:10px;">`
+      +`<div style="font-size:10px;font-weight:700;color:var(--ink-soft);margin-bottom:4px;letter-spacing:.3px;">DISTRIBUIÇÃO EM NÍVEIS</div>`
+      +`<div class="shell-row">${rows}</div></div>`;
+  }else{
+    qv.innerHTML=`<div class="q-row">`
+      +`<span><strong>3.</strong> Quantos elétrons tem a camada de valência?</span>`
+      +`<span class="valence-slot empty" id="valence-slot">?</span></div>`;
+  }
+  qv.classList.remove('hidden','drama-in');void qv.offsetWidth;qv.classList.add('drama-in');
   document.getElementById('valence-slot').addEventListener('click',()=>{vib('tap');openKeypad('valence');});
   hideHintBtn();
   if(TUT.active){
     const b=document.getElementById('tut-balloon');
     b.style.opacity='0';setTimeout(()=>{b.className='tut-balloon';b.style.opacity='';},300);
-    setTimeout(()=>showTutStep(10),400);
+    setTimeout(()=>{if(TUT.step<10)showTutStep(10);},400);
   }
 }
 function submitValence(val){
   const vSlot=document.getElementById('valence-slot');
   vSlot.classList.remove('empty','wrong','correct');vSlot.textContent=val;
+  if(TUT.active&&TUT.step===10){
+    const{electrons}=getValence(S.distribution);
+    if(val===electrons){
+      vSlot.classList.add('correct');
+      // remove pulso e dica de erro se estiverem ativos
+      document.querySelectorAll('.shell-val-pulsing').forEach(e=>e.classList.remove('shell-val-pulsing'));
+      const _hint=document.getElementById('valence-hint-txt');if(_hint)_hint.remove();
+      vib('success');fireConfetti(180);
+      new Audio('audio/funfare.mp3?v='+ASSET_VER).play().catch(()=>{});
+      playApplause();showToast('Parabéns!');
+      const dark=document.getElementById('tut-fade-dark');
+      const qEl=document.getElementById('question');
+      hideLvBrackets();clearSlotOutlines();
+      document.querySelectorAll('#slots .slot .chip').forEach(c=>{c.style.outline='';c.style.boxShadow='';});
+      qEl.style.transition='opacity .5s ease';qEl.style.opacity='0';
+      setTimeout(()=>dark.classList.add('on'),300);
+      setTimeout(()=>{
+        qEl.classList.add('hidden');qEl.style.opacity='';qEl.style.transition='';
+        resetToIdle(false);tutSuppressPlayBtn=true;syncTutPlayBtn();
+        playTutAudio('dialogo13',()=>{
+          tutSuppressPlayBtn=false;syncTutPlayBtn();
+          _nameSubmitCallback=()=>{
+            dark.classList.remove('on');
+            playTutAudio('dialogo13.1',null);
+            setTimeout(()=>showModeCards(),1000);
+          };
+          openStudentInfoModal();
+        });
+      },900);
+    }else{
+      SC.totalErrors++;SC.cur.errors++;SC.valenceErrors++;
+      vib('error');playNo();vSlot.classList.add('wrong');showToast('Tente de novo',true);
+      setTimeout(()=>{vSlot.classList.remove('wrong');vSlot.classList.add('empty');vSlot.textContent='?';},1200);
+      // dica de erro + pulso no último slot
+      if(!document.getElementById('valence-hint-txt')){
+        const{distribution}=S;const shellMap=getShellElectrons(distribution);
+        const maxN=shellMap?Math.max(...Object.keys(shellMap).map(Number)):2;
+        const lvName=SHELL_NAME[maxN]||String(maxN);
+        const qEl=document.getElementById('question');
+        const h=document.createElement('p');h.id='valence-hint-txt';
+        h.style.cssText='margin-top:8px;font-size:12px;font-weight:700;color:#e03030;';
+        h.textContent=`A última camada é a ${lvName}. Quantos elétrons tem aí?`;
+        qEl.appendChild(h);
+        document.getElementById('sv-'+maxN)?.classList.add('shell-val-pulsing');
+      }
+    }
+    return;
+  }
   const{electrons}=getValence(S.distribution);
   if(val===electrons){
     vSlot.classList.add('correct');
@@ -1463,7 +1614,9 @@ function submitValence(val){
       SC.completed++;S.phase='done';S.done.add(S.selectedZ);
       fireConfetti();showToast('Parabéns!');playYesAndApplause();
       if(!S.firstDone){S.firstDone=true;for(let z=1;z<=37;z++)unlockElement(z);}
-      if(SC.completed>=10){
+      if(desafioMode){
+        setTimeout(()=>nextChallengeElement(),1500);
+      }else if(SC.completed>=10){
         setTimeout(showScoreCard,1600);
       }else{
         setTimeout(showStripSpotlight,1100);
@@ -1564,12 +1717,12 @@ function askShells(){
   for(let n=1;n<=maxN;n++)
     rows+=`<div class="shell-item"><span class="shell-name">${SHELL_NAME[n]}</span>
             <span class="shell-val empty" data-n="${n}" id="sv-${n}">?</span>
-            <span class="shell-ordinal">${n}º nível</span></div>`;
+            <span class="shell-ordinal" style="color:${n===1?'#22c55e':'#ef4444'};font-weight:700;">${n}º nível</span></div>`;
   const qEl=document.getElementById('question');
   qEl.innerHTML=`
     <span><strong>2.</strong> Qual a distribuição de elétrons em níveis?</span>
     <div class="shell-row" id="shell-row">${rows}</div>`;
-  qEl.classList.remove('drama-in');void qEl.offsetWidth;qEl.classList.add('drama-in');
+  qEl.classList.remove('hidden','drama-in');void qEl.offsetWidth;qEl.classList.add('drama-in');
   for(let n=1;n<=maxN;n++){
     document.getElementById(`sv-${n}`).addEventListener('click',()=>{
       if(document.getElementById(`sv-${n}`).classList.contains('correct'))return;
@@ -1579,6 +1732,7 @@ function askShells(){
     });
   }
   hideHintBtn();
+  if(!TUT.active)setTimeout(showDistributionBrackets,120);
   if(TUT.active){
     setTimeout(()=>{if(TUT.step<9)showTutStep(9);},400);
   }
@@ -1590,11 +1744,14 @@ function submitShell(n,val){
   if(TUT.active&&TUT.step===9){
     if(val===(shellMap[n]||0)){
       slot.classList.add('correct');S.correctShells.add(n);
-      vib('success');playCerto();showToast('Certo!');
+      vib('success');showToast('Certo!');
       if(n===1){
+        playYes();
         const s0=document.querySelector('#slots .slot[data-idx="0"] .chip .sup');
         if(s0)s0.classList.remove('chip-sup-pulsing');
         hideLvBracket(1);clearSlotOutlines();
+        const _br2r=document.getElementById('lv-bracket-2');if(_br2r)_br2r.style.opacity='';
+        const _ord2r=document.querySelector('.shell-item:nth-child(2) .shell-ordinal');if(_ord2r)_ord2r.style.opacity='';
         setTimeout(()=>{
           undimAllShellSlots();dimShellSlot(1);
           undimAllSlots();dimSlot(0);
@@ -1607,7 +1764,9 @@ function submitShell(n,val){
       }else{
         document.querySelectorAll('.chip-sup-pulsing').forEach(e=>e.classList.remove('chip-sup-pulsing'));
         SC.shellsOk++;
-        fireConfetti();showToast('Parabéns!');playYes();
+        fireConfetti(180);
+        new Audio('audio/funfare.mp3?v='+ASSET_VER).play().catch(()=>{});
+        playApplause();showToast('Parabéns!');
         setTimeout(()=>advanceTutorial(),1500);
       }
     }else{
@@ -1846,7 +2005,7 @@ function showElectronPicker(lastSlot){
   if(TUT.active&&TUT.step===6){
     const epAudioMap={5:'dialogo8.2',6:'dialogo8.3',7:'dialogo8.4'};
     const epAudio=epAudioMap[S.selectedZ];
-    if(epAudio)playTutAudio(epAudio,null);
+    if(epAudio)playTutAudio(epAudio,()=>{tutSuppressPlayBtn=true;syncTutPlayBtn();});
   }
   vib('tap');
 }
@@ -1882,7 +2041,7 @@ const COLORS=['#5fb3ff','#2f97f5','#21c87a','#ffd97a','#ff8ec1','#a07dff'];
 function resizeCv(){cv.width=innerWidth;cv.height=innerHeight;}
 window.addEventListener('resize',resizeCv);resizeCv();
 function playYes(){new Audio('audio/yes.mp3').play().catch(()=>{});}
-function playCerto(){new Audio('audio/certo.wav').play().catch(()=>{});}
+function playCerto(){new Audio('audio/correto.mp3').play().catch(()=>{});}
 function playNo(){new Audio('audio/no.mp3').play().catch(()=>{});}
 function playApplause(){new Audio('audio/applause.mp3').play().catch(()=>{});}
 function playYesAndApplause(){playYes();playApplause();}
@@ -1938,12 +2097,20 @@ function _proceedFromCover(){
       const msg=document.getElementById('strip-msg');
       msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
       msg.style.width=r.width+'px';
-      msg.textContent='Escolha um elemento';msg.style.display='block';
+      msg.textContent='Clique no play pra começar';msg.style.display='block';
     });
   }else{
     tutWaitingPlay=true;
     document.getElementById('tut-blocker').style.display='block';
     document.getElementById('btn-tutorial').classList.add('wait-play');
+    requestAnimationFrame(()=>{
+      const sw=document.querySelector('.strip-wrap');if(!sw)return;
+      const r=sw.getBoundingClientRect();
+      const msg=document.getElementById('strip-msg');
+      msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
+      msg.style.width=r.width+'px';
+      msg.textContent='Clique no play pra começar';msg.style.display='block';
+    });
   }
 }
 
@@ -1960,13 +2127,207 @@ function openStudentInfoModal(){
   document.getElementById('btn-enter').addEventListener('click',()=>{
     vib('tap');STUDENT_NAME=inp.value.trim();
     document.getElementById('info-mask').classList.remove('show');
-    _proceedFromCover();
+    if(_nameSubmitCallback){const cb=_nameSubmitCallback;_nameSubmitCallback=null;cb();}
+    else{_proceedFromCover();}
   });
 })();
 
 document.getElementById('btn-cover').addEventListener('click',()=>{
   vib('tap');_proceedFromCover();
 });
+
+(function(){
+  const btn=document.getElementById('btn-skip-tutorial');
+  let tid=null;
+  function cancel(){
+    clearTimeout(tid);tid=null;
+    btn.classList.remove('holding');
+  }
+  btn.addEventListener('pointerdown',e=>{
+    e.preventDefault();if(tid)return;
+    btn.classList.add('holding');
+    tid=setTimeout(()=>{
+      cancel();vib('tap');
+      clearPauseableTimers();
+      hideLvBrackets();hideTutAtom(true);hideTutImage(true);
+      document.querySelectorAll('.chip-sup-pulsing').forEach(e=>e.classList.remove('chip-sup-pulsing'));
+      endTutorial({skipResume:true});
+      TUT.scoreSnapshot=null;
+      resetToIdle(true);
+      _nameSubmitCallback=()=>{
+        playTutAudio('dialogo13.1',null);
+        setTimeout(()=>showModeCards(),1000);
+      };
+      openStudentInfoModal();
+    },2000);
+  });
+  btn.addEventListener('pointerup',cancel);
+  btn.addEventListener('pointercancel',cancel);
+  btn.addEventListener('pointerleave',cancel);
+})();
+
+// ── MODO DE JOGO ──────────────────────────────────────
+function showModeCards(){
+  const el=document.getElementById('mode-overlay');
+  el.style.opacity='0';el.classList.add('show');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    el.style.transition='opacity .45s ease';el.style.opacity='1';
+  }));
+}
+function hideModeCards(){
+  const el=document.getElementById('mode-overlay');
+  el.classList.remove('show');el.style.opacity='';el.style.transition='';
+}
+function generateChallengeSequence(){
+  const seq=[];const counts=[2,2,4,2];
+  CHALLENGE_GROUPS.forEach((grp,gi)=>{
+    const avail=grp.filter(z=>z in ELEMENTS).sort(()=>Math.random()-.5);
+    avail.slice(0,counts[gi]).forEach(z=>seq.push(z));
+  });
+  return seq.sort((a,b)=>a-b);
+}
+function startModoLivre(){
+  desafioMode=false;
+  S.firstDone=true;
+  for(let z=1;z<=37;z++)unlockElement(z);
+  document.getElementById('cover').style.display='none';
+  document.getElementById('btn-tutorial').classList.add('btn-hidden');
+  requestAnimationFrame(()=>{
+    const sw=document.querySelector('.strip-wrap');if(!sw)return;
+    const r=sw.getBoundingClientRect();
+    const msg=document.getElementById('strip-msg');
+    msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
+    msg.style.width=r.width+'px';
+    msg.textContent='Escolha qualquer elemento pra praticar';
+    msg.style.display='block';
+  });
+}
+function startModoDesafio(){
+  desafioMode=true;
+  challengeSeq=[...CHALLENGE_INITIAL];challengeIdx=0;
+  document.getElementById('cover').style.display='none';
+  nextChallengeElement();
+}
+function nextChallengeElement(){
+  if(challengeIdx>=challengeSeq.length){
+    challengeSeq=generateChallengeSequence();challengeIdx=0;
+  }
+  const z=challengeSeq[challengeIdx++];
+  setTimeout(()=>{
+    unlockElement(z);resetToIdle(false);selectElement(z);
+    // escurece todos os outros cards e mostra mensagem
+    desafioMsgActive=true;
+    document.querySelectorAll('.el-card').forEach(c=>{
+      if(+c.dataset.z===z)c.classList.remove('faded');
+      else c.classList.add('faded');
+    });
+    showStripSpotlight('O elemento escolhido é esse');
+  },300);
+}
+document.getElementById('btn-modo-livre').addEventListener('click',()=>{
+  vib('tap');hideModeCards();
+  playTutAudio('dialogo13.2',()=>startModoLivre());
+});
+document.getElementById('btn-modo-desafio').addEventListener('click',()=>{
+  vib('tap');hideModeCards();
+  playTutAudio('dialogo13.2',()=>startModoDesafio());
+});
+
+// ── PERGUNTA DE VALÊNCIA TUT ──────────────────────────
+const LV_BRACKET_COLORS={1:'#22c55e',2:'#ef4444',3:'#ff9f43',4:'#8b5e3c',5:'#45aaf2',6:'#a55eea',7:'#fd9644'};
+function showDistributionBrackets(){
+  if(TUT.active||!S.distribution||!S.distribution.length)return;
+  const groups={};
+  S.distribution.forEach((d,i)=>{const n=+d.sublevel[0];(groups[n]||(groups[n]=[])).push(i);});
+  hideLvBrackets();
+  Object.keys(groups).sort((a,b)=>+a-+b).forEach(n=>{
+    showLvBracket(+n,groups[n],`${n}º nível`,LV_BRACKET_COLORS[+n]||'#888');
+  });
+}
+function pulseShellVal(n,times){
+  const el=document.getElementById('sv-'+n);if(!el)return;
+  const steps=[];for(let i=0;i<times;i++)steps.push(1.35,1);
+  let i=0;const dur=185;
+  const next=()=>{if(i>=steps.length){el.style.transform='';el.style.transition='';return;}
+    el.style.transition=`transform ${dur}ms ease`;el.style.transform=`scale(${steps[i++]})`;setTimeout(next,dur);};
+  next();
+}
+function rebuildShellQuestion(){
+  const shellMap=getShellElectrons(S.distribution);
+  if(!shellMap||!Object.keys(shellMap).length)return;
+  const maxN=Math.max(...Object.keys(shellMap).map(Number));
+  let rows='';
+  for(let n=1;n<=maxN;n++){
+    const correct=S.correctShells&&S.correctShells.has(n);
+    rows+=`<div class="shell-item"><span class="shell-name">${SHELL_NAME[n]}</span>`
+      +`<span class="shell-val ${correct?'correct':'empty'}" data-n="${n}" id="sv-${n}">${correct?shellMap[n]:'?'}</span>`
+      +`<span class="shell-ordinal" style="color:${n===1?'#22c55e':'#ef4444'};font-weight:700;">${n}º nível</span></div>`;
+  }
+  const qEl=document.getElementById('question');
+  qEl.classList.remove('hidden');
+  qEl.innerHTML=`<span><strong>2.</strong> Qual a distribuição de elétrons em níveis?</span>`
+    +`<div class="shell-row" id="shell-row">${rows}</div>`;
+}
+function askValenceTUT(){
+  const shellMap=getShellElectrons(S.distribution);
+  if(!shellMap)return;
+  const maxN=Math.max(...Object.keys(shellMap).map(Number));
+  const qEl=document.getElementById('question');
+  // reconstrói distribuição em níveis + pergunta 3
+  let rows='';
+  for(let n=1;n<=maxN;n++){
+    const correct=S.correctShells&&S.correctShells.has(n);
+    rows+=`<div class="shell-item"><span class="shell-name">${SHELL_NAME[n]}</span>`
+      +`<span class="shell-val ${correct?'correct':'empty'}" data-n="${n}" id="sv-${n}">${correct?shellMap[n]:'?'}</span>`
+      +`<span class="shell-ordinal" style="color:${n===1?'#22c55e':'#ef4444'};font-weight:700;">${n}º nível</span></div>`;
+  }
+  qEl.innerHTML=`<span><strong>2.</strong> Qual a distribuição de elétrons em níveis?</span>`
+    +`<div class="shell-row" id="shell-row">${rows}</div>`
+    +`<p style="margin-top:8px;font-size:13px;font-weight:700;color:var(--ink);"><strong>3.</strong> Toque nos elétrons da camada de valência.</p>`;
+  qEl.style.opacity='0';
+  qEl.classList.remove('hidden');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    qEl.style.transition='opacity .5s ease';qEl.style.opacity='1';
+    setTimeout(()=>{qEl.style.transition='';},550);
+  }));
+  function handleTap(n){
+    if(n===maxN){
+      vib('success');playCerto();showToast('Parabéns!');
+      const dark=document.getElementById('tut-fade-dark');
+      // tira brackets e some perguntas em fade
+      hideLvBrackets();
+      clearSlotOutlines();
+      qEl.style.transition='opacity .5s ease';qEl.style.opacity='0';
+      // escurece fundo
+      setTimeout(()=>dark.classList.add('on'),300);
+      setTimeout(()=>{
+        qEl.classList.add('hidden');qEl.style.opacity='';qEl.style.transition='';
+        // zera o elemento (chips voltam ao diagrama)
+        document.getElementById('tut-spot').classList.remove('on');
+        resetToIdle(false);
+        tutSuppressPlayBtn=true;syncTutPlayBtn();
+        playTutAudio('dialogo13',()=>{
+          tutSuppressPlayBtn=false;syncTutPlayBtn();
+          _nameSubmitCallback=()=>{
+            dark.classList.remove('on');
+            playTutAudio('dialogo13.1',null);
+            setTimeout(()=>showModeCards(),1000);
+          };
+          openStudentInfoModal();
+        });
+      },900);
+    }else{
+      vib('error');playNo();showToast('Tente de novo',true);
+      SC.totalErrors++;SC.cur.errors++;SC.valenceErrors++;
+      const el=document.getElementById('sv-'+n);
+      if(el){el.classList.add('wrong');setTimeout(()=>el.classList.remove('wrong'),800);}
+    }
+  }
+  for(let n=1;n<=maxN;n++){
+    const el=document.getElementById('sv-'+n);
+    if(el){el.style.cursor='pointer';el.addEventListener('click',()=>handleTap(n));}
+  }
+}
 
 /* ═══════════════════════════════════════════════════
  *  TUTORIAL
@@ -1984,6 +2345,13 @@ let shellBlinkIdx=0;
 let valenceBlinkTimer=null;
 let valenceBlinkActive=false;
 let tutAudio=null,tutAudio2=null,tutCanNext=false,tutWaitingPlay=false,tutPendingFn=null,tutSuppressPlayBtn=false;
+let _nameSubmitCallback=null;
+let desafioMode=false;
+let desafioMsgActive=false;
+const CHALLENGE_INITIAL=[3,8,11,15,20,22,26,30,32,35];
+const CHALLENGE_GROUPS=[[3,4,5,6,7,8,9,10],[11,12,13,14,15,16,17,18],[19,20,21,22,23,24,25,26,27,28,29,30],[31,32,33,34,35,36,37]];
+let challengeSeq=[...CHALLENGE_INITIAL];
+let challengeIdx=0;
 let tutPauseableTimers=[];
 let tutEvidenceEls=[];
 let tutGlowEls=[];
@@ -2043,7 +2411,7 @@ function syncTutPlayBtn(){
   const ended=(a1&&(a1.ended||a1._done))||(a2&&(a2.ended||a2._done));
   const waitNext=!isPlaying&&(!!tutPendingFn||ended);
   // ⏸ enquanto toca, ▶ verde quando parado
-  btn.textContent=isPlaying?'⏸':'▶';
+  btn.textContent=isPlaying?'⏸︎':'▶︎';
   btn.classList.toggle('playing',!!isPlaying);
   // pulso verde quando um áudio terminou e falta um toque para continuar
   btn.classList.toggle('audio-done',!!waitNext&&TUT.active);
@@ -2370,10 +2738,10 @@ const TUT_STEPS=[
    onAudioStart:()=>{
      document.querySelectorAll('.chip-sup-pulsing').forEach(el=>el.classList.remove('chip-sup-pulsing'));
      setPauseableTimer(()=>{askMostEnergetic();tutSuppressPlayBtn=true;syncTutPlayBtn();},8500);
-     setPauseableTimer(()=>evidenceChip('#slots .slot[data-idx="0"]',1.05),15000);
+     setPauseableTimer(()=>evidenceChip('#slots .slot[data-idx="0"]',1.00),15000);
      setPauseableTimer(()=>evidenceChip('#slots .slot[data-idx="1"]',1.18),16000);
      setPauseableTimer(()=>evidenceChip('#slots .slot[data-idx="2"]',1.31),17000);
-     setPauseableTimer(()=>pulseCard('#slots .slot[data-idx="0"]'),18000);
+     setPauseableTimer(()=>pulseCard('#slots .slot[data-idx="0"]'),18500);
      setPauseableTimer(()=>pulseCard('#slots .slot[data-idx="2"]'),19000);
    }},
   {text:'Separei os subníveis de cada nível com cores específicas pra você enxergar os níveis.',
@@ -2384,48 +2752,108 @@ const TUT_STEPS=[
      if(s0)s0.classList.add('chip-sup-pulsing');
    },
    onAudioStart:()=>{
-     // 4.5s: pergunta 2
+     // 4.7s: pergunta 2
      setPauseableTimer(()=>{
        if(S.phase!=='shells')askShells();
        tutSuppressPlayBtn=true;syncTutPlayBtn();
-     },4500);
-     // 14.5s: 3 pulsos no 1s² + contorno verde + bracket "1o nível"
+     },4700);
+     // 14.5s: 3 pulsos no 1s² + contorno verde + bracket "1º nível"
      setPauseableTimer(()=>{
        pulseCardN('#slots .slot[data-idx="0"]',3);
        setSlotOutline(0,'#22c55e');
-       showLvBracket(1,[0],'1o nível','#22c55e');
+       showLvBracket(1,[0],'1º nível','#22c55e');
      },14500);
-     // 16.2s: 3 pulsos no 2s²+2p + contorno vermelho + bracket "2o nível"
+     // 16.2s: 3 pulsos no 2s²+2p + contorno vermelho + bracket "2º nível"
      setPauseableTimer(()=>{
        pulseCardN('#slots .slot[data-idx="1"]',3);
        pulseCardN('#slots .slot[data-idx="2"]',3);
        setSlotOutline(1,'#ef4444');setSlotOutline(2,'#ef4444');
-       showLvBracket(2,[1,2],'2o nível','#ef4444');
+       showLvBracket(2,[1,2],'2º nível','#ef4444');
      },16200);
-     // 22.7s: 2 pulsos no 1s² e no bracket "1o nível"
+     // 22.7s: 2 pulsos no 1s² e no bracket "1º nível"
      setPauseableTimer(()=>{
        pulseCardN('#slots .slot[data-idx="0"]',2);
        pulseLvBracket(1);
-     },22700);
-     // 24.7s: 2 pulsos nos subníveis e no bracket "2o nível"
+     },23700);
+     // 24.7s: 2 pulsos nos subníveis e no bracket "2º nível"
      setPauseableTimer(()=>{
        pulseCardN('#slots .slot[data-idx="1"]',2);
        pulseCardN('#slots .slot[data-idx="2"]',2);
        pulseLvBracket(2);
-     },24700);
+     },24500);
      // 28s: destaca nível 1, escurece nível 2 (dica visual)
      setPauseableTimer(()=>{
-       showLvBracket(1,[0],'1o nível','#22c55e');
+       showLvBracket(1,[0],'1º nível','#22c55e');
        dimSlot(1);dimSlot(2);
        dimShellSlot(2);
+       const _br2=document.getElementById('lv-bracket-2');
+       if(_br2)_br2.style.opacity='0.25';
+       const _ord2=document.querySelector('.shell-item:nth-child(2) .shell-ordinal');
+       if(_ord2)_ord2.style.opacity='0.25';
      },28000);
    }},
   {text:'A camada de valência é sempre a última camada da distribuição. Se esse átomo tem duas camadas, a última é a segunda (<span style="background:#fff8c0;padding:1px 4px;border-radius:4px;font-weight:900;color:#886500;">destacada em amarelo</span>). Some os elétrons desses subníveis e você terá os elétrons da camada de valência.',
-   spot:null,balloon:'left-panel',arr:null,freeInteraction:true,noSpot:true,html:true,hideNav:true,hideBalloon:true,lockNext:true,audioChain:['dialogo12','dialogo12.1'],audioChainOnSteps:[null,startValenceBlink]},
+   spot:null,balloon:'left-panel',arr:null,freeInteraction:true,noSpot:true,html:true,hideNav:true,hideBalloon:true,lockNext:true,
+   audio:'dialogo12',singleAudio:true,
+   onAudioEnd:()=>{
+     // adiciona input de resposta sem escurecer nada
+     S.phase='valence';
+     const qEl=document.getElementById('question');
+     const ansEl=document.createElement('div');
+     ansEl.style.cssText='display:flex;align-items:center;gap:10px;margin-top:10px;opacity:0;transition:opacity .4s ease;';
+     ansEl.innerHTML=`<span style="font-size:13px;font-weight:600;">Sua resposta:</span>`
+       +`<span class="shell-val empty" id="valence-slot">?</span>`;
+     qEl.appendChild(ansEl);
+     document.getElementById('valence-slot').addEventListener('click',()=>{vib('tap');openKeypad('valence');});
+     requestAnimationFrame(()=>requestAnimationFrame(()=>ansEl.style.opacity='1'));
+   },
+   onAudioStart:()=>{
+     const qEl=document.getElementById('question');
+     // some tudo em fade-out
+     qEl.style.transition='opacity .4s ease';qEl.style.opacity='0';
+     setTimeout(()=>{qEl.classList.add('hidden');qEl.style.opacity='';qEl.style.transition='';},400);
+     // 4s: pergunta 3
+     setPauseableTimer(()=>{
+       qEl.innerHTML='<span><strong>3.</strong> Quantos elétrons tem na camada de valência?</span>';
+       qEl.style.opacity='0';qEl.classList.remove('hidden');
+       requestAnimationFrame(()=>requestAnimationFrame(()=>{
+         qEl.style.transition='opacity .5s ease';qEl.style.opacity='1';
+         setTimeout(()=>qEl.style.transition='',550);
+       }));
+       tutSuppressPlayBtn=true;syncTutPlayBtn();
+     },4000);
+     // 20.8s: distribuição por níveis colorida + brackets
+     setPauseableTimer(()=>{
+       const shellMap=getShellElectrons(S.distribution);if(!shellMap)return;
+       const maxN=Math.max(...Object.keys(shellMap).map(Number));
+       let rows='';
+       for(let n=1;n<=maxN;n++){
+         const color=n===1?'#22c55e':'#ef4444';
+         const v=S.correctShells&&S.correctShells.has(n)?shellMap[n]:'?';
+         rows+=`<div class="shell-item"><span class="shell-name">${SHELL_NAME[n]}</span>`
+           +`<span class="shell-val correct" data-n="${n}" id="sv-${n}" style="border-color:${color};box-shadow:0 0 0 3px ${color}55;">${v}</span>`
+           +`<span class="shell-ordinal" style="color:${color};font-weight:700;">${n}º nível</span></div>`;
+       }
+       const sd=document.createElement('div');
+       sd.style.cssText='opacity:0;transition:opacity .5s ease;';
+       sd.innerHTML=`<div class="shell-row">${rows}</div>`;
+       qEl.appendChild(sd);
+       [['0','#22c55e'],['1','#ef4444'],['2','#ef4444']].forEach(([idx,c])=>{
+         const ch=document.querySelector(`#slots .slot[data-idx="${idx}"] .chip`);
+         if(ch){ch.style.outline=`2px solid ${c}`;ch.style.boxShadow=`0 0 0 3px ${c}66`;}
+       });
+       showLvBracket(1,[0],'1º nível','#22c55e');
+       showLvBracket(2,[1,2],'2º nível','#ef4444');
+       requestAnimationFrame(()=>requestAnimationFrame(()=>sd.style.opacity='1'));
+     },20800);
+     // 29s: 3 pulsos no slot L (sv-2)
+     setPauseableTimer(()=>pulseShellVal(2,3),29000);
+   }},
 ];
 function startTutorial(){
   if(localStorage.getItem('tut_done'))return;
   TUT.active=true;
+  document.getElementById('btn-skip-tutorial').classList.add('show');
   document.getElementById('tut-blocker').style.display='block';
   document.getElementById('tut-spot').classList.add('on');
   showTutStep(0);
@@ -2435,6 +2863,7 @@ function showTutStep(i){
   clearPauseableTimers();
   clearEvidenceChips();
   hideLvBrackets();clearSlotOutlines();clearChipHighlights();undimAllSlots();undimAllShellSlots();
+  const _q=document.getElementById('question');if(_q&&i!==10){_q.classList.add('hidden');_q.innerHTML='';}
   tutSuppressPlayBtn=!!(TUT_STEPS[i]&&TUT_STEPS[i].hidePlayBtn);
   document.querySelectorAll('.chip-sup-pulsing').forEach(el=>el.classList.remove('chip-sup-pulsing'));
   tutPendingFn=null;
@@ -2577,6 +3006,7 @@ function goBackTutorial(){
 }
 function endTutorial(opts){
   opts=opts||{};
+  document.getElementById('btn-skip-tutorial').classList.remove('show');
   stopArrowAnimation();
   stopHandAnimation();
   stopTutAudio();

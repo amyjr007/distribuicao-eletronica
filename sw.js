@@ -1,4 +1,4 @@
-const CACHE = 'dist-eletronica-v13';
+const CACHE = 'dist-eletronica-v18';
 
 const FILES = [
   './',
@@ -6,8 +6,8 @@ const FILES = [
   './manifest.json',
   './icon.svg',
   './imagens/linus_pauling.png',
+  './audio/correto.mp3',
   './audio/applause.mp3',
-  './audio/certo.wav',
   './audio/dialogo1.mp3',
   './audio/dialogo1.1.mp3',
   './audio/dialogo1.2.mp3',
@@ -32,7 +32,9 @@ const FILES = [
   './audio/dialogo11.2.mp3',
   './audio/dialogo11.3.mp3',
   './audio/dialogo12.mp3',
-  './audio/dialogo12.1.mp3',
+  './audio/dialogo13.mp3',
+  './audio/dialogo13.1.mp3',
+  './audio/dialogo13.2.mp3',
   './audio/encaixe.mp3',
   './audio/finalaudio.mp3',
   './audio/funfare.mp3',
