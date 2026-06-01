@@ -1,4 +1,4 @@
-const CACHE = 'dist-eletronica-v18';
+const CACHE = 'dist-eletronica-v19';
 
 const FILES = [
   './',
