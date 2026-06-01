@@ -70,6 +70,8 @@ body{
   background:var(--card);border-radius:16px;box-shadow:var(--shadow);
   padding:16px 18px;display:flex;flex-direction:column;min-height:0;overflow:hidden;
 }
+#left-panel{overflow-y:auto;}
+#left-panel .question{flex-shrink:0;}
 .panel h3{margin:0 0 8px;color:var(--sky-700);font-size:12px;letter-spacing:.9px;
            text-transform:uppercase;font-weight:700;}
 
@@ -1619,7 +1621,7 @@ function submitValence(val){
       }else if(SC.completed>=10){
         setTimeout(showScoreCard,1600);
       }else{
-        setTimeout(showStripSpotlight,1100);
+        setTimeout(()=>{resetToIdle(true);hideStripSpotlight();hideLvBrackets();},1100);
       }
     }
   }else{
@@ -2091,14 +2093,7 @@ let STUDENT_NAME='';
 function _proceedFromCover(){
   document.getElementById('cover').style.display='none';
   if(localStorage.getItem('tut_done')){
-    requestAnimationFrame(()=>{
-      const sw=document.querySelector('.strip-wrap');if(!sw)return;
-      const r=sw.getBoundingClientRect();
-      const msg=document.getElementById('strip-msg');
-      msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
-      msg.style.width=r.width+'px';
-      msg.textContent='Clique no play pra começar';msg.style.display='block';
-    });
+    // já passou pelo tutorial — sem mensagem extra
   }else{
     tutWaitingPlay=true;
     document.getElementById('tut-blocker').style.display='block';
@@ -2187,6 +2182,7 @@ function generateChallengeSequence(){
   return seq.sort((a,b)=>a-b);
 }
 function startModoLivre(){
+  endTutorial({skipResume:true});
   desafioMode=false;
   S.firstDone=true;
   for(let z=1;z<=37;z++)unlockElement(z);
@@ -2203,6 +2199,7 @@ function startModoLivre(){
   });
 }
 function startModoDesafio(){
+  endTutorial({skipResume:true});
   desafioMode=true;
   challengeSeq=[...CHALLENGE_INITIAL];challengeIdx=0;
   document.getElementById('cover').style.display='none';
