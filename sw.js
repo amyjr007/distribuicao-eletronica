@@ -1,4 +1,4 @@
-const CACHE = 'dist-eletronica-v19';
+const CACHE = 'dist-eletronica-v20';
 
 const FILES = [
   './',
@@ -60,11 +60,17 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// network-first: sempre tenta a versão mais nova; cai no cache só se offline
+// network-first com no-store para ignorar cache HTTP do servidor
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // Para HTML e JS usa no-store para sempre buscar versão nova
+  const url = e.request.url;
+  const isHtmlOrJs = url.endsWith('.html') || url.endsWith('.js') || url.endsWith('/');
+  const req = isHtmlOrJs
+    ? new Request(e.request, { cache: 'no-store' })
+    : e.request;
   e.respondWith(
-    fetch(e.request)
+    fetch(req)
       .then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, copy));
