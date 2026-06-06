@@ -1,4 +1,4 @@
-const CACHE = 'dist-eletronica-v20';
+const CACHE = 'dist-eletronica-v21';
 
 const FILES = [
   './',
@@ -8,6 +8,7 @@ const FILES = [
   './imagens/linus_pauling.png',
   './audio/correto.mp3',
   './audio/applause.mp3',
+  './audio/dialogo0.mp3',
   './audio/dialogo1.mp3',
   './audio/dialogo1.1.mp3',
   './audio/dialogo1.2.mp3',

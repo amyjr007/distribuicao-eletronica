@@ -425,6 +425,49 @@ body{
   padding:20px;backdrop-filter:blur(5px);
 }
 .info-mask.show{display:flex;}
+/* QUICK NAV */
+#quick-nav-bar{
+  position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+  z-index:4200;display:none;
+  padding:9px 26px;border:none;border-radius:16px 16px 0 0;
+  background:rgba(13,66,130,.92);color:#fff;
+  font-size:13px;font-weight:800;letter-spacing:.3px;cursor:pointer;font-family:inherit;
+  box-shadow:0 -3px 14px rgba(0,0,0,.28);backdrop-filter:blur(6px);user-select:none;
+}
+#quick-nav-bar.show{display:block;}
+#quick-nav-panel{
+  position:fixed;left:0;right:0;bottom:0;z-index:4300;
+  transform:translateY(100%);transition:transform .42s cubic-bezier(.22,1,.36,1);
+  pointer-events:none;
+}
+#quick-nav-panel.open{transform:translateY(0);pointer-events:auto;}
+#quick-nav-inner{
+  margin:0 auto;max-width:560px;padding:22px 20px 28px;
+  background:linear-gradient(180deg,rgba(8,22,46,.62),rgba(8,22,46,.86));
+  backdrop-filter:blur(7px);border-radius:22px 22px 0 0;
+  box-shadow:0 -10px 40px rgba(0,0,0,.45);
+}
+.qn-head{color:#fff;font-size:15px;font-weight:800;text-align:center;margin-bottom:14px;letter-spacing:.4px;}
+#quick-nav-list{display:flex;flex-direction:column;gap:9px;}
+.qn-item{
+  display:flex;align-items:center;gap:12px;width:100%;
+  padding:11px 16px;border:1.5px solid rgba(255,255,255,.25);border-radius:13px;
+  background:rgba(255,255,255,.06);cursor:pointer;text-align:left;font-family:inherit;
+  transition:background .15s,border-color .15s,transform .1s;
+}
+.qn-item:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);}
+.qn-item:active{transform:scale(.98);}
+.qn-num{
+  min-width:30px;height:30px;border-radius:50%;background:var(--sky-500);
+  color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.qn-title{color:#fff;font-size:15px;font-weight:700;}
+#quick-nav-close{
+  margin-top:16px;width:100%;padding:11px 0;border:none;border-radius:13px;
+  background:rgba(255,255,255,.16);color:#fff;font-size:14px;font-weight:800;
+  cursor:pointer;font-family:inherit;transition:background .15s;
+}
+#quick-nav-close:hover{background:rgba(255,255,255,.28);}
 #btn-tut-nav{
   position:fixed;bottom:22px;left:50%;transform:translateX(calc(-50% + 90px));
   z-index:3750;display:none;overflow:hidden;
@@ -907,6 +950,23 @@ body{
 <button id="btn-skip-tutorial">Pular tutorial</button>
 <button id="btn-tut-nav">Navegue pelo tutorial</button>
 <div id="tut-hand">👆</div>
+
+<!-- QUICK NAV (barra na base, sempre disponível) -->
+<button id="quick-nav-bar">⬆ Navegação rápida</button>
+<div id="quick-nav-panel">
+  <div id="quick-nav-inner">
+    <div class="qn-head">Navegação rápida</div>
+    <div id="quick-nav-list">
+      <button class="qn-item" data-sec="1"><span class="qn-num">1</span><span class="qn-title">Tutorial completo</span></button>
+      <button class="qn-item" data-sec="2"><span class="qn-num">2</span><span class="qn-title">A distribuição eletrônica</span></button>
+      <button class="qn-item" data-sec="3"><span class="qn-num">3</span><span class="qn-title">Subnível mais energético</span></button>
+      <button class="qn-item" data-sec="4"><span class="qn-num">4</span><span class="qn-title">Distribuição por níveis</span></button>
+      <button class="qn-item" data-sec="5"><span class="qn-num">5</span><span class="qn-title">Camada de valência</span></button>
+      <button class="qn-item" data-sec="6"><span class="qn-num" style="background:#ef4444">6</span><span class="qn-title" style="color:#fca5a5">Pular tutorial</span></button>
+    </div>
+    <button id="quick-nav-close">Fechar</button>
+  </div>
+</div>
 
 <!-- STUDENT INFO MODAL -->
 <div class="info-mask" id="info-mask">
@@ -2202,17 +2262,9 @@ let STUDENT_NAME='';
 
 function _proceedFromCover(){
   document.getElementById('cover').style.display='none';
-  tutWaitingPlay=true;
-  document.getElementById('tut-blocker').style.display='block';
-  document.getElementById('btn-tutorial').classList.add('wait-play');
-  requestAnimationFrame(()=>{
-    const sw=document.querySelector('.strip-wrap');if(!sw)return;
-    const r=sw.getBoundingClientRect();
-    const msg=document.getElementById('strip-msg');
-    msg.style.left=r.left+'px';msg.style.top=(r.bottom+14)+'px';
-    msg.style.width=r.width+'px';
-    msg.textContent='Clique no play pra começar';msg.style.display='block';
-  });
+  // mostra a barra de navegação rápida (sempre disponível) e toca dialogo0
+  document.getElementById('quick-nav-bar').classList.add('show');
+  playTutAudio('dialogo0',null);
 }
 
 function openStudentInfoModal(){
@@ -2238,6 +2290,24 @@ document.getElementById('btn-tut-nav').addEventListener('click',()=>{
 });
 document.getElementById('btn-cover').addEventListener('click',()=>{
   vib('tap');_proceedFromCover();
+});
+
+// ── QUICK NAV (barra na base) ─────────────────────────
+function openQuickNav(){
+  document.getElementById('quick-nav-panel').classList.add('open');
+  document.getElementById('quick-nav-bar').style.opacity='0';
+}
+function closeQuickNav(){
+  document.getElementById('quick-nav-panel').classList.remove('open');
+  document.getElementById('quick-nav-bar').style.opacity='';
+}
+document.getElementById('quick-nav-bar').addEventListener('click',()=>{vib('tap');openQuickNav();});
+document.getElementById('quick-nav-close').addEventListener('click',()=>{vib('tap');closeQuickNav();});
+document.getElementById('quick-nav-list').addEventListener('click',e=>{
+  const item=e.target.closest('.qn-item');if(!item)return;
+  vib('tap');closeQuickNav();
+  stopTutAudio();
+  startTutSection(+item.dataset.sec);
 });
 
 (function(){
@@ -2373,6 +2443,7 @@ function startTutSection(sec){
         });
       };
       syncTutPlayBtn();
+      {const fn=tutPendingFn;tutPendingFn=null;fn();}
     },60);
   }else if(sec===2){
     showTutStep(1);
@@ -2463,7 +2534,7 @@ function nextChallengeElement(){
 document.getElementById('btn-modo-livre').addEventListener('click',()=>{
   vib('tap');hideModeCards();
   startModoLivre(); // setup imediato: unlocks, remove blocker, mostra barra
-  new Audio('audio/dialogo13.2.mp3?v='+ASSET_VER).play().catch(()=>{});
+  playTutAudio('dialogo13.2',null);
 });
 document.getElementById('btn-modo-desafio').addEventListener('click',()=>{
   vib('tap');hideModeCards();
@@ -2582,6 +2653,7 @@ let shellBlinkIdx=0;
 let valenceBlinkTimer=null;
 let valenceBlinkActive=false;
 let tutAudio=null,tutAudio2=null,tutCanNext=false,tutWaitingPlay=false,tutPendingFn=null,tutSuppressPlayBtn=false;
+let _audioTok=0;
 let _nameSubmitCallback=null;
 let desafioMode=false;
 let desafioMsgActive=false;
@@ -2675,8 +2747,9 @@ function playTutAudio(file,onEnded){
 }
 function playTutAudioPair(main,sequential,onBothEnded){
   stopTutAudio();
+  const tok=_audioTok;
   if(sequential){
-    tutAudio=_playOne(main,()=>{setTimeout(()=>{tutAudio2=_playOne(main+'.1',onBothEnded);},80);});
+    tutAudio=_playOne(main,()=>{setTimeout(()=>{if(_audioTok!==tok)return;tutAudio2=_playOne(main+'.1',onBothEnded);},80);});
   }else{
     let done=0;const cb=()=>{done++;if(done>=2&&onBothEnded)onBothEnded();};
     tutAudio =_playOne(main,    cb);
@@ -2685,7 +2758,9 @@ function playTutAudioPair(main,sequential,onBothEnded){
 }
 function _playChain(files,onDone,onSteps){
   stopTutAudio();
+  const tok=_audioTok;
   const step=(i)=>{
+    if(_audioTok!==tok)return;
     if(i>=files.length){if(onDone)onDone();return;}
     if(onSteps&&onSteps[i])onSteps[i]();
     const a=_playOne(files[i],()=>setTimeout(()=>step(i+1),80));
@@ -2694,6 +2769,7 @@ function _playChain(files,onDone,onSteps){
   step(0);
 }
 function stopTutAudio(){
+  _audioTok++;
   [tutAudio,tutAudio2].forEach(a=>{if(a){if(a._poll)clearInterval(a._poll);a.pause();a.currentTime=0;}});
   tutAudio=null;tutAudio2=null;
   syncTutPlayBtn();
